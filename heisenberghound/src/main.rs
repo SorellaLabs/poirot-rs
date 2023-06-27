@@ -18,11 +18,15 @@ async fn main() -> Result<(), Box<dyn Error>> {
         &env::var("RETH_PORT").expect("RETH_PORT not found in .env"),
     );
     let provider = Provider::<Http>::try_from(&url).unwrap();
-
+    
     println!("Connected to Ethereum node: {}", url);
     let block_number = BlockNumber::try_from(17000000)?;
 
+    let block = provider.get_block(block_number).await?;
+
+    println!("Block: {:?}", block);
     let traces = provider.trace_block(block_number).await?;
+    
     print!("Tracing block");
     for trace in traces {
         println!("{:#?}", trace);
