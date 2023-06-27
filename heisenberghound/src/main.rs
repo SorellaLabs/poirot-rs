@@ -20,15 +20,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let provider = Provider::<Http>::try_from(&url).unwrap();
 
     println!("Connected to Ethereum node: {}", url);
-    let block_number = BlockNumber::try_from(17565965_u64)?;
-    let block_number1 = BlockNumber::try_from(1_u64)?;
-
-
-    let traces = provider.trace_block(block_number1).await?;
-    print!("Tracing block");
-    for trace in traces {
-        println!("{:#?}", trace);
-    }
+    let block_number = BlockNumber::try_from(17000000)?;
 
     let traces = provider.trace_block(block_number).await?;
     print!("Tracing block");
