@@ -20,7 +20,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let provider = Provider::<Http>::try_from(&url).unwrap();
     
     println!("Connected to Ethereum node: {}", url);
-    let block_number = BlockNumber::try_from(13700000)?;
+    let block_number = BlockNumber::try_from(17565965)?;
 
     //let block = provider.get_block(block_number).await?;
 
@@ -42,5 +42,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
     }
 
     Ok(())
+
 }
 
+
+//TODO build trace decoder for Univ3 swaps using reth & / or heimdall + 
