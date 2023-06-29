@@ -55,7 +55,7 @@ pub struct TracingClient {
 
 impl TracingClient {
     pub fn new(db_path: &Path, handle: Handle) -> Self {
-        let client = init_client(db_path)?;
+        let client = init_client(db_path).unwrap();
         // EthApi -> EthApi<Client, Pool, Network>
         let api = init_eth_api(client.clone(), TaskManager::new(handle.clone()));
         // EthFilter -> EthFilter<Client, Pool>
@@ -63,7 +63,7 @@ impl TracingClient {
         let trace = init_trace(client.clone(), api.clone(), TaskManager::new(handle.clone()), 10);
         let debug = init_debug(client, api.clone(), TaskManager::new(handle), 10);
 
-        self { reth_api: api, reth_filter: filter, reth_trace: trace, reth_debug: debug }
+        Self { reth_api: api, reth_filter: filter, reth_trace: trace, reth_debug: debug }
     }
 }
 
