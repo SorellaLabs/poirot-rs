@@ -29,6 +29,7 @@ use reth_transaction_pool::{EthTransactionValidator, GasCostOrdering, Pool, Pool
 
 // Std
 use std::{fmt::Debug, path::Path, sync::Arc};
+use tokio::runtime::Handle;
 
 pub type RethClient = BlockchainProvider<
     Arc<Env<WriteMap>>,
@@ -45,6 +46,26 @@ pub type RethFilter = EthFilter<RethClient, RethTxPool>;
 pub type RethTrace = TraceApi<RethClient, RethApi>;
 pub type RethDebug = DebugApi<RethClient, RethApi>;
 
+pub struct TracingClient {
+    pub reth_api: RethApi,
+    pub reth_trace: RethTrace,
+    pub reth_filter: RethFilter,
+    pub reth_debug: RethDebug,
+}
+
+impl TracingClient {
+    pub fn new(db_path: &Path, handle: Handle) -> Self {
+        let client = init_client(db_path)?;
+        // EthApi -> EthApi<Client, Pool, Network>
+        let api = init_eth_api(client.clone(), TaskManager::new(handle.clone()));
+        // EthFilter -> EthFilter<Client, Pool>
+        let filter = init_eth_filter(client.clone(), 1000, TaskManager::new(handle.clone()));
+        let trace = init_trace(client.clone(), api.clone(), TaskManager::new(handle.clone()), 10);
+        let debug = init_debug(client, api.clone(), TaskManager::new(handle), 10);
+
+        self { reth_api: api, reth_filter: filter, reth_trace: trace, reth_debug: debug }
+    }
+}
 
 /// re-implementation of 'view()'
 /// allows for a function to be passed in through a RO libmdbx transaction
