@@ -66,6 +66,7 @@ async fn run() -> Result<(), Box<dyn Error>> {
     // Trace this mev block:
     let block_number = BlockId::from(17600791);
 
+    // This throws InternalTracingError
     let block_parity_trace = tracer.reth_trace.trace_block(block_number).await?;
     
     // Print traces
