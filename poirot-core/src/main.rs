@@ -4,6 +4,7 @@ use poirot_rs::TracingClient;
 
 // reth types
 use reth_primitives::BlockId;
+use reth_rpc_api::EthApiServer;
 use reth_rpc_types::trace::geth::GethDebugTracingOptions;
 
 #[tokio::main]
@@ -33,8 +34,14 @@ async fn run() -> Result<(), Box<dyn Error>> {
     // Initialize TracingClient
     let tracer = TracingClient::new(db_path, handle.clone());
 
+
+
     // Trace this mev block:
     let block_number = BlockId::from(10000);
+
+    let block = tracer.reth_api.block_transaction_count_by_number(10000.into()).await?;
+
+    println!("Block: {:?}", block);
 
     let tracing_opt = GethDebugTracingOptions::default();
     let block_traces1 = tracer.reth_debug.debug_trace_block(block_number, tracing_opt).await?;
