@@ -50,18 +50,6 @@ async fn run() -> Result<(), Box<dyn Error>> {
 
     println!("Block: {:?}", block.unwrap());
 
-    let tracing_opt = GethDebugTracingOptions::default();
-    let tx_trace = match tracer.reth_debug.raw_transaction(tx_hash).await {
-        Ok(block_traces) => block_traces,
-        Err(e) => {
-            eprintln!("Failed to trace block: {:?}", e);
-            return Err(Box::new(e))
-        }
-    };
-
-    // Print traces
-    println!("{:?}", tx_trace);
-
     let tx_trace = match tracer.reth_debug.raw_transaction(tx_hash).await {
         Ok(block_traces) => block_traces,
         Err(e) => {
@@ -74,24 +62,25 @@ async fn run() -> Result<(), Box<dyn Error>> {
     println!("{:?}", tx_trace);
 
     // Trace this mev block:
-    let block_number = reth_primitives::BlockNumberOrTag::from(17600791);
+    let block_number = BlockId::from(17600791);
+
+    let tracing_opt = GethDebugTracingOptions::default();
+
+    let block_trace = tracer.reth_debug.debug_trace_block(block_number, tracing_opt).await?;
+
+    for trace in block_trace {
+        println!("{:?}", trace);
+    }
 
     let tx_hash =
         "0x742940f6bd10a5014055eb6f940ec894b3e164b985e02655fd04ce072ba6b854".parse().unwrap();
+
+    let tracing_opt = GethDebugTracingOptions::default();
 
     let tx_trace = tracer.reth_debug.debug_trace_transaction(tx_hash, tracing_opt.clone()).await?;
 
     // Print traces
     println!("{:?}", tx_trace);
-
-    let block_trace =
-        tracer.reth_debug.debug_trace_block_by_number(block_number, Some(tracing_opt)).await?;
-
-    //let block_traces = tracer.reth_trace.trace_block(block_number).await?;
-
-    for trace in block_trace {
-        println!("{:?}", trace);
-    }
 
     Ok(())
 }
