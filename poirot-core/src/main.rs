@@ -34,12 +34,10 @@ async fn run() -> Result<(), Box<dyn Error>> {
     // Initialize TracingClient
     let tracer = TracingClient::new(db_path, handle.clone());
 
-
-
     // Trace this mev block:
-    let block_number = BlockId::from(10000);
+    let block_number = BlockId::from(17600791);
 
-    let block = tracer.reth_api.block_transaction_count_by_number(10000.into()).await?;
+    let block = tracer.reth_api.block_transaction_count_by_number(17600791.into()).await?;
 
     println!("Block: {:?}", block);
 
