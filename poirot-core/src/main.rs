@@ -37,6 +37,7 @@ async fn run() -> Result<(), Box<dyn Error>> {
     // Initialize TracingClient
     let tracer = TracingClient::new(db_path, handle.clone());
 
+    // This works fine
     let block = match tracer.reth_api.block_transaction_count_by_number(17600791.into()).await {
         Ok(block) => block,
         Err(e) => {
@@ -45,10 +46,11 @@ async fn run() -> Result<(), Box<dyn Error>> {
         }
     };
 
+    println!("Block: {:?}", block.unwrap());
+
+    // This works fine
     let tx_hash =
         "0xec98e974ac4bdf912236ba566bf171419e814086d2d3fb8b5e62b6e0acb5b591".parse().unwrap();
-
-    println!("Block: {:?}", block.unwrap());
 
     let tx_trace = match tracer.reth_debug.raw_transaction(tx_hash).await {
         Ok(block_traces) => block_traces,
@@ -61,6 +63,9 @@ async fn run() -> Result<(), Box<dyn Error>> {
     // Print traces
     println!("{:?}", tx_trace);
 
+
+
+
     // Trace this mev block:
     let block_number = BlockId::from(17600791);
 
@@ -68,6 +73,7 @@ async fn run() -> Result<(), Box<dyn Error>> {
 
     let block_trace = tracer.reth_debug.debug_trace_block(block_number, tracing_opt).await?;
 
+    // This throws InternalTracingError
     for trace in block_trace {
         println!("{:?}", trace);
     }
@@ -85,4 +91,4 @@ async fn run() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-//TODO build trace decoder for Univ3 swaps using reth & / or heimdall +
+//TODO build trace decoder for Univ3 swaps, maybe use alloys-rs decoder have to see compat with reth
