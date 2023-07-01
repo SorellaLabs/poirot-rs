@@ -40,7 +40,7 @@ async fn run() -> Result<(), Box<dyn Error>> {
     // Trace this mev block:
     let block_number = BlockId::from(17600791);
 
-    let block = match tracer.reth_api.block_transaction_count_by_number(block_number.into()).await {
+    let block = match tracer.reth_api.block_transaction_count_by_number(17600791.into()).await {
         Ok(block) => block,
         Err(e) => {
             eprintln!("Failed to get block transaction count: {:?}", e);
