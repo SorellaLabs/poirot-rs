@@ -39,7 +39,7 @@ async fn run() -> Result<(), Box<dyn Error>> {
 
     let block = tracer.reth_api.block_transaction_count_by_number(17600791.into()).await?;
 
-    println!("Block: {:?}", block);
+    println!("Block: {:?}", block.unwrap());
 
     let tracing_opt = GethDebugTracingOptions::default();
     let block_traces1 = tracer.reth_debug.debug_trace_block(block_number, tracing_opt).await?;
