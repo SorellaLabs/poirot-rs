@@ -17,7 +17,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let handle = tokio::runtime::Handle::current();
 
     // Initialize TracingClient
-    let tracer = TracingClient::new(&db_path, handle);
+    let tracer = TracingClient::new(&db_path, handle.clone());
 
     // Trace this mev block:
     let block_number = BlockId::from(17565965);
