@@ -1,5 +1,6 @@
 use std::env;
 use std::path::Path;
+use std::error::Error;
 
 use poirot_rs::TracingClient;
 
@@ -8,7 +9,22 @@ use reth_primitives::BlockId;
 use reth_rpc_types::trace::geth;
 
 #[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
+async fn main() {
+    match run().await {
+        Ok(()) => println!("Success!"),
+        Err(e) => {
+            eprintln!("Error: {:?}", e);
+
+            let mut source = e.source();
+            while let Some(err) = source {
+                eprintln!("Caused by: {:?}", err);
+                source = err.source();
+            }
+        }
+    }
+}
+
+async fn run() -> Result<(), Box<dyn Error>> {
     // Read environment variables
     let db_path = env::var("DB_PATH").expect("DB_PATH is not set in env");
     let db_path = Path::new(&db_path);
