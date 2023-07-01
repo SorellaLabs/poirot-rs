@@ -6,7 +6,7 @@ use poirot_rs::TracingClient;
 
 // reth types
 use reth_primitives::BlockId;
-use reth_rpc_types::trace::geth;
+use reth_rpc_types::trace::geth::GethDebugTracingOptions;
 
 #[tokio::main]
 async fn main() {
@@ -37,12 +37,21 @@ async fn run() -> Result<(), Box<dyn Error>> {
 
     // Trace this mev block:
     let block_number = BlockId::from(17565965);
-    let block_traces = tracer.reth_trace.trace_block(block_number).await?;
+
+    let  tracing_opt = GethDebugTracingOptions::default();
+    let block_traces1 = tracer.reth_debug.debug_trace_block(block_number, tracing_opt).await?;
+
+    // Print traces
+    for trace in block_traces1 {
+        println!("{:?}", trace);
+    }
+
+    /*let block_traces = tracer.reth_trace.trace_block(block_number).await?;
 
     // Print traces
     for trace in block_traces {
         println!("{:?}", trace);
-    }
+    } */
 
     Ok(())
 }
