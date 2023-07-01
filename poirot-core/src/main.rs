@@ -4,7 +4,7 @@ use poirot_rs::TracingClient;
 
 // reth types
 use reth_primitives::BlockId;
-use reth_rpc_api::EthApiServer;
+use reth_rpc_api::{EthApiServer, DebugApiServer};
 use reth_rpc_types::trace::geth::GethDebugTracingOptions;
 
 #[tokio::main]
@@ -40,7 +40,7 @@ async fn run() -> Result<(), Box<dyn Error>> {
     // Trace this mev block:
     let block_number = BlockId::from(17600791);
 
-    let block = match tracer.reth_api.block_transaction_count_by_number(17600791.into()).await {
+    let block = match tracer.reth_api.block_transaction_count_by_number(block_number.into()).await {
         Ok(block) => block,
         Err(e) => {
             eprintln!("Failed to get block transaction count: {:?}", e);
@@ -48,10 +48,12 @@ async fn run() -> Result<(), Box<dyn Error>> {
         }
     };
 
+    let tx_hash = "0xec98e974ac4bdf912236ba566bf171419e814086d2d3fb8b5e62b6e0acb5b591".parse().unwrap();
+
     println!("Block: {:?}", block.unwrap());
 
     let tracing_opt = GethDebugTracingOptions::default();
-    let block_traces1 = match tracer.reth_debug.debug_trace_block(block_number, tracing_opt).await {
+    let tx_trace = match tracer.reth_debug.debug_trace_transaction(tx_hash, tracing_opt).await {
         Ok(block_traces) => block_traces,
         Err(e) => {
             eprintln!("Failed to trace block: {:?}", e);
@@ -60,9 +62,8 @@ async fn run() -> Result<(), Box<dyn Error>> {
     };
 
     // Print traces
-    for trace in block_traces1 {
-        println!("{:?}", trace);
-    }
+    println!("{:?}", tx_trace);
+    
 
     /*let block_traces = tracer.reth_trace.trace_block(block_number).await?;
 
