@@ -34,7 +34,7 @@ async fn run() -> Result<(), Box<dyn Error>> {
     let tracer = TracingClient::new(db_path, handle.clone());
 
     // Trace this mev block:
-    let block_number = BlockId::from(17565965);
+    let block_number = BlockId::from(10000);
 
     let tracing_opt = GethDebugTracingOptions::default();
     let block_traces1 = tracer.reth_debug.debug_trace_block(block_number, tracing_opt).await?;
