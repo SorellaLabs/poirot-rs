@@ -63,17 +63,13 @@ async fn run() -> Result<(), Box<dyn Error>> {
     // Print traces
     println!("{:?}", tx_trace);
 
-
-
-
     // Trace this mev block:
     let block_number = BlockId::from(17600791);
 
     let tracing_opt = GethDebugTracingOptions::default();
-
+    // This throws InternalTracingError
     let block_trace = tracer.reth_debug.debug_trace_block(block_number, tracing_opt).await?;
 
-    // This throws InternalTracingError
     for trace in block_trace {
         println!("{:?}", trace);
     }
@@ -91,4 +87,5 @@ async fn run() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-//TODO build trace decoder for Univ3 swaps, maybe use alloys-rs decoder have to see compat with reth
+//TODO build trace decoder for Univ3 swaps, maybe use alloys-rs decoder have to see compat with
+// reth
