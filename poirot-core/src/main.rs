@@ -37,8 +37,7 @@ async fn run() -> Result<(), Box<dyn Error>> {
     // Initialize TracingClient
     let tracer = TracingClient::new(db_path, handle.clone());
 
-    // Trace this mev block:
-    let block_number = BlockId::from(17600791);
+    
 
     let block = match tracer.reth_api.block_transaction_count_by_number(17600791.into()).await {
         Ok(block) => block,
@@ -63,14 +62,30 @@ async fn run() -> Result<(), Box<dyn Error>> {
 
     // Print traces
     println!("{:?}", tx_trace);
-    
 
-    /*let block_traces = tracer.reth_trace.trace_block(block_number).await?;
+
+    let tx_trace = match tracer.reth_debug.raw_transaction(tx_hash).await {
+        Ok(block_traces) => block_traces,
+        Err(e) => {
+            eprintln!("Failed to trace block: {:?}", e);
+            return Err(Box::new(e))
+        }
+    };
 
     // Print traces
-    for trace in block_traces {
+    println!("{:?}", tx_trace);
+
+    // Trace this mev block:
+    let block_number = reth_primitives::BlockNumberOrTag::from(17600791);
+    
+    let block_trace = tracer.reth_debug.debug_trace_block_by_number(block_number, Some(tracing_opt)).await?;
+
+    //let block_traces = tracer.reth_trace.trace_block(block_number).await?;
+
+
+    for trace in block_trace {
         println!("{:?}", trace);
-    } */
+    } 
 
     Ok(())
 }
