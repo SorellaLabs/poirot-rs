@@ -1,6 +1,4 @@
-use std::env;
-use std::path::Path;
-use std::error::Error;
+use std::{env, error::Error, path::Path};
 
 use poirot_rs::TracingClient;
 
@@ -33,12 +31,12 @@ async fn run() -> Result<(), Box<dyn Error>> {
     let handle = tokio::runtime::Handle::current();
 
     // Initialize TracingClient
-    let tracer = TracingClient::new(&db_path, handle.clone());
+    let tracer = TracingClient::new(db_path, handle.clone());
 
     // Trace this mev block:
     let block_number = BlockId::from(17565965);
 
-    let  tracing_opt = GethDebugTracingOptions::default();
+    let tracing_opt = GethDebugTracingOptions::default();
     let block_traces1 = tracer.reth_debug.debug_trace_block(block_number, tracing_opt).await?;
 
     // Print traces
