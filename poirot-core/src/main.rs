@@ -53,7 +53,7 @@ async fn run() -> Result<(), Box<dyn Error>> {
     println!("Block: {:?}", block.unwrap());
 
     let tracing_opt = GethDebugTracingOptions::default();
-    let tx_trace = match tracer.reth_debug.debug_trace_transaction(tx_hash, tracing_opt).await {
+    let tx_trace = match tracer.reth_debug.raw_transaction(tx_hash).await {
         Ok(block_traces) => block_traces,
         Err(e) => {
             eprintln!("Failed to trace block: {:?}", e);
