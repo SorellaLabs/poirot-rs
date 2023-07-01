@@ -15,7 +15,7 @@ use reth_db::{
 
 use reth_network_api::test_utils::NoopNetwork;
 use reth_primitives::MAINNET;
-use reth_provider::{providers::BlockchainProvider, ProviderFactory};
+use reth_provider::{providers::BlockchainProvider, BlockIdReader, ProviderFactory};
 use reth_revm::Factory;
 use reth_rpc::{
     eth::{
@@ -26,7 +26,6 @@ use reth_rpc::{
 };
 use reth_tasks::TaskManager;
 use reth_transaction_pool::{EthTransactionValidator, GasCostOrdering, Pool, PooledTransaction};
-use reth_provider::BlockIdReader;
 // Std
 use std::{fmt::Debug, path::Path, sync::Arc};
 use tokio::runtime::Handle;
@@ -80,8 +79,6 @@ impl TracingClient {
             blockchain_tree,
         )
         .unwrap();
-
-        
 
         let state_cache = EthStateCache::spawn(provider.clone(), EthStateCacheConfig::default());
         let tx_pool = reth_transaction_pool::Pool::eth_pool(
