@@ -77,6 +77,7 @@ async fn run() -> Result<(), Box<dyn Error>> {
     }
 
     let tracing_opt = GethDebugTracingOptions::default();
+    
     // This throws InternalTracingError
     let block_trace = tracer.reth_debug.debug_trace_block(block_number, tracing_opt).await?;
 

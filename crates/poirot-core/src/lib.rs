@@ -38,16 +38,11 @@ pub type Provider = BlockchainProvider<
 pub type RethTxPool =
     Pool<EthTransactionValidator<Provider, PooledTransaction>, GasCostOrdering<PooledTransaction>>;
 
-pub type RethApi = EthApi<Provider, RethTxPool, NoopNetwork>;
-pub type RethFilter = EthFilter<Provider, RethTxPool>;
-pub type RethTrace = TraceApi<Provider, RethApi>;
-pub type RethDebug = DebugApi<Provider, RethApi>;
-
 pub struct TracingClient {
-    pub reth_api: RethApi,
-    pub reth_trace: RethTrace,
-    pub reth_filter: RethFilter,
-    pub reth_debug: RethDebug,
+    pub reth_api: EthApi<Provider, RethTxPool, NoopNetwork>,
+    pub reth_trace: TraceApi<Provider, RethApi>,
+    pub reth_filter: EthFilter<Provider, RethTxPool>,
+    pub reth_debug: DebugApi<Provider, RethApi>,
 }
 
 impl TracingClient {
