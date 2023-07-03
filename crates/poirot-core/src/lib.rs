@@ -15,7 +15,7 @@ use reth_db::{
 
 use reth_network_api::test_utils::NoopNetwork;
 use reth_primitives::MAINNET;
-use reth_provider::{providers::BlockchainProvider, BlockIdReader, ProviderFactory};
+use reth_provider::{providers::BlockchainProvider, ProviderFactory};
 use reth_revm::Factory;
 use reth_rpc::{
     eth::{
@@ -37,6 +37,11 @@ pub type Provider = BlockchainProvider<
 
 pub type RethTxPool =
     Pool<EthTransactionValidator<Provider, PooledTransaction>, GasCostOrdering<PooledTransaction>>;
+
+pub type RethApi = EthApi<Provider, RethTxPool, NoopNetwork>;
+pub type RethFilter = EthFilter<Provider, RethTxPool>;
+pub type RethTrace = TraceApi<Provider, RethApi>;
+pub type RethDebug = DebugApi<Provider, RethApi>;
 
 pub struct TracingClient {
     pub reth_api: EthApi<Provider, RethTxPool, NoopNetwork>,
