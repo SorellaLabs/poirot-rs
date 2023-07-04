@@ -151,7 +151,7 @@ pub fn init_db<P: AsRef<Path> + Debug>(path: P) -> eyre::Result<Env<WriteMap>> {
     let db = reth_db::mdbx::Env::<reth_db::mdbx::WriteMap>::open(
         path.as_ref(),
         reth_db::mdbx::EnvKind::RO,
-        Some(LogLevel::Warn),
+        Some(LogLevel::Verbose),
     )?;
 
     view(&db, |tx| {
