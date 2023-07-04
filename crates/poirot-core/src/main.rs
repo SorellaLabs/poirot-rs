@@ -1,5 +1,5 @@
-use std::{env, error::Error, path::Path};
 use poirot_core::TracingClient;
+use std::{env, error::Error, path::Path};
 
 // reth types
 use reth_primitives::BlockId;
@@ -7,12 +7,8 @@ use reth_rpc_api::{DebugApiServer, EthApiServer};
 use reth_rpc_types::trace::geth::GethDebugTracingOptions;
 
 #[tokio::main]
-async fn main() {
-    let runtime = tokio::runtime::Builder::new_multi_thread()
-        .enable_all()
-        .thread_stack_size(8 * 1024 * 1024)
-        .build()
-        .unwrap();
+async fn main() -> Result<(), Box<dyn Error>> {
+    let runtime = tokio_runtime()?;
 
     match run(runtime.handle().clone()).await {
         Ok(()) => println!("Success!"),
@@ -26,6 +22,16 @@ async fn main() {
             }
         }
     }
+
+    Ok(())
+}
+
+pub fn tokio_runtime() -> Result<tokio::runtime::Runtime, std::io::Error> {
+    tokio::runtime::Builder::new_multi_thread()
+        .enable_all()
+        // increase stack size, mostly for RPC calls that use the evm: <https://github.com/paradigmxyz/reth/issues/3056> and  <https://github.com/bluealloy/revm/issues/305>
+        .thread_stack_size(8 * 1024 * 1024)
+        .build()
 }
 
 async fn run(handle: tokio::runtime::Handle) -> Result<(), Box<dyn Error>> {
@@ -44,7 +50,7 @@ async fn run(handle: tokio::runtime::Handle) -> Result<(), Box<dyn Error>> {
         Ok(block) => block,
         Err(e) => {
             eprintln!("Failed to get block transaction count: {:?}", e);
-            return Err(Box::new(e));
+            return Err(Box::new(e))
         }
     };
 
@@ -58,7 +64,7 @@ async fn run(handle: tokio::runtime::Handle) -> Result<(), Box<dyn Error>> {
         Ok(block_traces) => block_traces,
         Err(e) => {
             eprintln!("Failed to trace block: {:?}", e);
-            return Err(Box::new(e));
+            return Err(Box::new(e))
         }
     };
 
