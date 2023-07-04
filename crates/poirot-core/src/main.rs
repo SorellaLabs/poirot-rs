@@ -75,7 +75,7 @@ async fn run(handle: tokio::runtime::Handle) -> Result<(), Box<dyn Error>> {
         }
     }
 
-    let tracing_opt = GethDebugTracingOptions::default();
+    /*let tracing_opt = GethDebugTracingOptions::default();
 
     // This throws InternalTracingError
     let block_trace = tracer.reth_debug.debug_trace_block(block_number, tracing_opt).await?;
@@ -85,7 +85,7 @@ async fn run(handle: tokio::runtime::Handle) -> Result<(), Box<dyn Error>> {
     }
 
     // This works fine
-    /*let block = match tracer.reth_api.block_transaction_count_by_number(17600791.into()).await {
+    let block = match tracer.reth_api.block_transaction_count_by_number(17600791.into()).await {
             Ok(block) => block,
             Err(e) => {
                 eprintln!("Failed to get block transaction count: {:?}", e);
