@@ -1,5 +1,4 @@
 use std::{env, error::Error, path::Path};
-
 use poirot_core::TracingClient;
 
 // reth types
@@ -9,7 +8,13 @@ use reth_rpc_types::trace::geth::GethDebugTracingOptions;
 
 #[tokio::main]
 async fn main() {
-    match run().await {
+    let runtime = tokio::runtime::Builder::new_multi_thread()
+        .enable_all()
+        .thread_stack_size(8 * 1024 * 1024)
+        .build()
+        .unwrap();
+
+    match run(runtime.handle().clone()).await {
         Ok(()) => println!("Success!"),
         Err(e) => {
             eprintln!("Error: {:?}", e);
@@ -23,7 +28,7 @@ async fn main() {
     }
 }
 
-async fn run() -> Result<(), Box<dyn Error>> {
+async fn run(handle: tokio::runtime::Handle) -> Result<(), Box<dyn Error>> {
     // Read environment variables
     let db_path = match env::var("DB_PATH") {
         Ok(path) => path,
@@ -31,18 +36,15 @@ async fn run() -> Result<(), Box<dyn Error>> {
     };
     let db_path = Path::new(&db_path);
 
-    // Get a handle to the current runtime.
-    let handle = tokio::runtime::Handle::current();
-
     // Initialize TracingClient
-    let tracer = TracingClient::new(db_path, handle.clone());
+    let tracer = TracingClient::new(db_path, handle);
 
     // This works fine
     let block = match tracer.reth_api.block_transaction_count_by_number(17600791.into()).await {
         Ok(block) => block,
         Err(e) => {
             eprintln!("Failed to get block transaction count: {:?}", e);
-            return Err(Box::new(e))
+            return Err(Box::new(e));
         }
     };
 
@@ -56,7 +58,7 @@ async fn run() -> Result<(), Box<dyn Error>> {
         Ok(block_traces) => block_traces,
         Err(e) => {
             eprintln!("Failed to trace block: {:?}", e);
-            return Err(Box::new(e))
+            return Err(Box::new(e));
         }
     };
 
@@ -94,7 +96,6 @@ async fn run() -> Result<(), Box<dyn Error>> {
 
     // Print traces
     println!("{:?}", tx_trace);
-
     Ok(())
 }
 
