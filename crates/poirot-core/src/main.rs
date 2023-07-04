@@ -6,11 +6,12 @@ use reth_primitives::BlockId;
 use reth_rpc_api::{DebugApiServer, EthApiServer};
 use reth_rpc_types::trace::geth::GethDebugTracingOptions;
 
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn Error>> {
-    let runtime = tokio_runtime()?;
+fn main() {
+    // Create the runtime
+    let runtime = tokio_runtime().expect("Failed to create runtime");
 
-    match run(runtime.handle().clone()).await {
+    // Use the runtime to execute the async function
+    match runtime.block_on(run(runtime.handle().clone())) {
         Ok(()) => println!("Success!"),
         Err(e) => {
             eprintln!("Error: {:?}", e);
@@ -22,8 +23,6 @@ async fn main() -> Result<(), Box<dyn Error>> {
             }
         }
     }
-
-    Ok(())
 }
 
 pub fn tokio_runtime() -> Result<tokio::runtime::Runtime, std::io::Error> {
