@@ -1,11 +1,20 @@
 use poirot_core::TracingClient;
 use std::{env, error::Error, path::Path};
+use tracing::Subscriber;
+use tracing_subscriber::{
+    filter::Directive, prelude::*, registry::LookupSpan, EnvFilter, Layer, Registry,
+};
 
 // reth types
 use reth_primitives::BlockId;
 use reth_rpc_types::trace::geth::GethDebugTracingOptions;
 
 fn main() {
+    let _ = tracing_subscriber::fmt()
+        .with_env_filter(EnvFilter::from_default_env())
+        .with_writer(std::io::stderr)
+        .try_init();
+
     // Create the runtime
     let runtime = tokio_runtime().expect("Failed to create runtime");
 

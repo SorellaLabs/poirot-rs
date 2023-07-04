@@ -12,8 +12,6 @@ use reth_db::{
     transaction::DbTx,
     DatabaseError,
 };
-use reth_interfaces::db::LogLevel;
-
 use reth_network_api::test_utils::NoopNetwork;
 use reth_primitives::MAINNET;
 use reth_provider::{providers::BlockchainProvider, ProviderFactory};
@@ -55,6 +53,8 @@ impl TracingClient {
     pub fn new(db_path: &Path, handle: Handle) -> Self {
         let task_manager = TaskManager::new(handle);
         let task_executor = task_manager.executor();
+
+        tokio::task::spawn(task_manager);
 
         let chain = MAINNET.clone();
         let db = Arc::new(init_db(db_path).unwrap());
@@ -146,12 +146,11 @@ where
 
 /// Opens up an existing database at the specified path.
 pub fn init_db<P: AsRef<Path> + Debug>(path: P) -> eyre::Result<Env<WriteMap>> {
-    std::fs::create_dir_all(path.as_ref())?;
-    println!("{:?}", path);
+    let _ = std::fs::create_dir_all(path.as_ref());
     let db = reth_db::mdbx::Env::<reth_db::mdbx::WriteMap>::open(
         path.as_ref(),
         reth_db::mdbx::EnvKind::RO,
-        Some(LogLevel::Debug),
+        None,
     )?;
 
     view(&db, |tx| {
