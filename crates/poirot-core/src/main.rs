@@ -1,4 +1,5 @@
 use poirot_core::TracingClient;
+use reth_revm::tracing::parity;
 use std::{env, error::Error, path::Path};
 use tracing::Subscriber;
 use tracing_subscriber::{
@@ -37,7 +38,7 @@ pub fn tokio_runtime() -> Result<tokio::runtime::Runtime, std::io::Error> {
     tokio::runtime::Builder::new_multi_thread()
         .enable_all()
         // increase stack size, mostly for RPC calls that use the evm: <https://github.com/paradigmxyz/reth/issues/3056> and  <https://github.com/bluealloy/revm/issues/305>
-        .thread_stack_size(16 * 1024 * 1024)
+        .thread_stack_size(8 * 1024 * 1024)
         .build()
 }
 
@@ -62,6 +63,12 @@ async fn run(handle: tokio::runtime::Handle) -> Result<(), Box<dyn Error>> {
     // Print traces
     println!("{:?}", tx_trace);
 
+    let parity_trace = tracer.reth_trace.trace_transaction(tx_hash).await?;
+
+    // Print traces
+    println!("{:?}", parity_trace);
+
+    /*
     // Trace this mev block:
     let block_number = BlockId::from(17600791);
 
@@ -75,7 +82,7 @@ async fn run(handle: tokio::runtime::Handle) -> Result<(), Box<dyn Error>> {
         }
     }
 
-    /*let tracing_opt = GethDebugTracingOptions::default();
+    let tracing_opt = GethDebugTracingOptions::default();
 
     // This throws InternalTracingError
     let block_trace = tracer.reth_debug.debug_trace_block(block_number, tracing_opt).await?;
