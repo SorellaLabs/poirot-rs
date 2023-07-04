@@ -45,7 +45,7 @@ async fn run(handle: tokio::runtime::Handle) -> Result<(), Box<dyn Error>> {
     let tracer = TracingClient::new(db_path, handle);
 
     // This works fine
-    let block = match tracer.reth_api.block_transaction_count_by_number(17600791.into()).await {
+    /*let block = match tracer.reth_api.block_transaction_count_by_number(17600791.into()).await {
         Ok(block) => block,
         Err(e) => {
             eprintln!("Failed to get block transaction count: {:?}", e);
@@ -69,9 +69,23 @@ async fn run(handle: tokio::runtime::Handle) -> Result<(), Box<dyn Error>> {
 
     // Print traces
     println!("{:?}", tx_trace);
+*/  
+
+    let tx_hash =
+    "0x742940f6bd10a5014055eb6f940ec894b3e164b985e02655fd04ce072ba6b854".parse().unwrap();
+
+    let tracing_opt = GethDebugTracingOptions::default();
+
+    let tx_trace = tracer.reth_debug.debug_trace_transaction(tx_hash, tracing_opt.clone()).await?;
+
+    // Print traces
+    println!("{:?}", tx_trace);
+    
 
     // Trace this mev block:
     let block_number = BlockId::from(17600791);
+
+    
 
     // This throws InternalTracingError
     let block_parity_trace = tracer.reth_trace.trace_block(block_number).await?;
@@ -92,16 +106,8 @@ async fn run(handle: tokio::runtime::Handle) -> Result<(), Box<dyn Error>> {
         println!("{:?}", trace);
     }
 
-    let tx_hash =
-        "0x742940f6bd10a5014055eb6f940ec894b3e164b985e02655fd04ce072ba6b854".parse().unwrap();
-
-    let tracing_opt = GethDebugTracingOptions::default();
-
-    let tx_trace = tracer.reth_debug.debug_trace_transaction(tx_hash, tracing_opt.clone()).await?;
-
-    // Print traces
-    println!("{:?}", tx_trace);
     Ok(())
+    
 }
 
 //TODO build trace decoder for Univ3 swaps, maybe use alloys-rs decoder have to see compat with
