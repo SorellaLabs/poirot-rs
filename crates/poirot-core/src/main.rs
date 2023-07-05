@@ -61,12 +61,12 @@ async fn run(handle: tokio::runtime::Handle) -> Result<(), Box<dyn Error>> {
     let tx_trace = tracer.reth_debug.debug_trace_transaction(tx_hash, tracing_opt.clone()).await?;
 
     // Print traces
-    println!("{:?}", tx_trace);
+    println!("{:#?}", tx_trace);
 
     let parity_trace = tracer.reth_trace.trace_transaction(tx_hash).await?;
 
     // Print traces
-    println!("{:?}", parity_trace);
+    println!("{:#?}", parity_trace);
 
     /*
     // Trace this mev block:
