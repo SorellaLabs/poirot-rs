@@ -22,6 +22,8 @@ reth-beacon-consensus = { git = "https://github.com/paradigmxyz/reth", package =
 reth-revm = { git = "https://github.com/paradigmxyz/reth", package = "reth-revm"}
 reth-interfaces = { git = "https://github.com/paradigmxyz/reth", package = "reth-interfaces"}
 
+alloy-json-abi = {git = "https://github.com/alloy-rs/core", package = "alloy-json-abi"}
+
 
 
 tokio = { version = "1.28.2", features = ["full"] }
