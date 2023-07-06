@@ -1,3 +1,5 @@
+mod action;
+
 use crate::action::Action;
 use crate::action::ActionType;
 use crate::action::Transfer;
@@ -70,7 +72,7 @@ impl Parser {
 
         match curr.trace.action {
             RethAction::Call(call) => {
-                let decoded = match IERC20::IERC20Calls::decode(&hex::encode(curr.input.to_vec()), true) {
+                let decoded = match IERC20::IERC20Calls::decode(&curr.input.to_vec(), true) {
                     Ok(decoded) => decoded,
                     Err(_) => return None,
                 };
