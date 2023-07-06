@@ -84,14 +84,14 @@ impl Parser {
                 match decoded {
                     IERC20::IERC20Calls::transfer(transfer_call) => {
                         let transfer = Transfer {
-                            to: transfer_call.to,
+                            to: Address(transfer_call.to),
                             amount: transfer_call.amount,
                             token: call.to,
                         };
                     },
                     IERC20::IERC20Calls::transferFrom(transfer_from_call) => {
                         let transfer = Transfer {
-                            to: transfer_from_call.to,
+                            to: Address(transfer_from_call.to.0),
                             amount: transfer_from_call.amount,
                             token: call.to,
                         };
