@@ -46,8 +46,14 @@ impl Parser {
         if parsed.is_some() {
             actions.push(parsed.unwrap());
         } else {
-            actions.push(self.current());
+            actions.push(Action {
+                ty: self.current().clone(),
+                hash: self.current().transaction_hash,
+                block: self.current().block_number,
+            });
         }
+
+        actions
     }
 
     /// Advance the parser forwards one step, ready to parse the next token.
@@ -70,7 +76,7 @@ impl Parser {
 
         match curr.trace.action {
             RethAction::Call(call) => {
-                let decoded = match IERC20::IERC20Calls::decode(&curr.input.to_vec(), true) {
+                let decoded = match IERC20::IERC20Calls::decode(&call.input.to_vec(), true) {
                     Ok(decoded) => decoded,
                     Err(_) => return None,
                 };
