@@ -74,7 +74,7 @@ async fn run(handle: tokio::runtime::Handle) -> Result<(), Box<dyn Error>> {
 
     for i in parser.parse() {
         match i.ty {
-            ActionType::Transfer(t) => println!("{transfer:#?}"),
+            ActionType::Transfer(t) => println!("{t:#?}"),
             _ => continue,
         }
     }
