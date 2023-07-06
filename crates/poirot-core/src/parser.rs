@@ -1,8 +1,6 @@
-mod action;
-
-use crate::action::Action;
-use crate::action::ActionType;
-use crate::action::Transfer;
+use poirot_core::action::Action;
+use poirot_core::action::ActionType;
+use poirot_core::action::Transfer;
 
 use reth_rpc_types::trace::parity::{Action as RethAction};
 use reth_rpc_types::trace::parity::LocalizedTransactionTrace;

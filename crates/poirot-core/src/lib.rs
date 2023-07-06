@@ -30,6 +30,7 @@ use std::{fmt::Debug, path::Path, sync::Arc};
 use tokio::runtime::Handle;
 
 mod parser;
+mod action;
 
 pub type Provider = BlockchainProvider<
     Arc<Env<WriteMap>>,
