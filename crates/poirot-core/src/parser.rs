@@ -7,7 +7,7 @@ use reth_rpc_types::trace::parity::LocalizedTransactionTrace;
 
 use alloy_sol_types::{sol, SolCall};
 use reth_primitives::hex_literal::hex;
-use reth_primitives::Address;
+use reth_primitives::H160;
 
 use std::cell::Cell;
 
@@ -85,14 +85,14 @@ impl Parser {
                 match decoded {
                     IERC20::IERC20Calls::transfer(transfer_call) => {
                         let transfer = Transfer {
-                            to: Address(transfer_call.to),
+                            to: H160(transfer_call.to),
                             amount: transfer_call.amount,
                             token: call.to,
                         };
                     },
                     IERC20::IERC20Calls::transferFrom(transfer_from_call) => {
                         let transfer = Transfer {
-                            to: Address(transfer_from_call.to.0),
+                            to: H160(transfer_from_call.to.0),
                             amount: transfer_from_call.amount,
                             token: call.to,
                         };
