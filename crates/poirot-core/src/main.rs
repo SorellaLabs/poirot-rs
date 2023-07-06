@@ -1,27 +1,23 @@
 use ethers::prelude::k256::elliptic_curve::rand_core::block;
-use poirot_core::TracingClient;
-use poirot_core::parser::Parser;
+use poirot_core::{parser::Parser, TracingClient};
+
+use poirot_core::action::ActionType;
 
 use std::{env, error::Error, path::Path};
 
-use tracing_subscriber::EnvFilter;
-
 // reth types
 
-
 use reth_primitives::{BlockId, BlockNumberOrTag};
-=======
 use tracing::Subscriber;
 use tracing_subscriber::{
     filter::Directive, prelude::*, registry::LookupSpan, EnvFilter, Layer, Registry,
 };
 // reth types
-use reth_primitives::{BlockId, BlockNumHash};
+use reth_primitives::BlockNumHash;
 use reth_rpc_types::trace::geth::GethDebugTracingOptions;
 
 // alloy
 use alloy_json_abi::*;
-
 
 fn main() {
     let _ = tracing_subscriber::fmt()
@@ -67,37 +63,34 @@ async fn run(handle: tokio::runtime::Handle) -> Result<(), Box<dyn Error>> {
     // Initialize TracingClient
     let tracer = TracingClient::new(db_path, handle);
 
-
     let parity_trace =
         tracer.reth_trace.trace_block(BlockId::Number(BlockNumberOrTag::Latest)).await?;
 
     let parser = Parser::new(parity_trace.unwrap());
 
+    for i in parser.parse() {
+        match i.ty {
+            ActionType::Transfer(t) => println!("{t:#?}"),
+            _ => continue,
+        }
+    }
+
     // Print traces
-    println!("{:#?}", parser.parse());
 
     Ok(())
-}
-
-   
-
-    Ok(())
-
-
 }
 
 //TODO build trace decoder for Univ3 swaps, maybe use alloys-rs decoder have to see compat with
 
-async fn inspect_block(tracer: TracingClient, block_number: BlockId) -> Result<(), Box<dyn Error>> {
-    let block_trace = tracer
-        .reth_trace
-        .trace_block(block_number)
-        .await
-        .expect("Failed tracing block");
+// async fn inspect_block(tracer: TracingClient, block_number: BlockId) -> Result<(), Box<dyn
+// Error>> {     let block_trace = tracer
+//         .reth_trace
+//         .trace_block(block_number)
+//         .await
+//         .expect("Failed tracing block");
 
-    if let Some(block_trace) 
+//     if let Some(block_trace)
 
-    Ok(())
+//     Ok(())
 
-}
-
+// }
