@@ -23,7 +23,7 @@ reth-revm = { git = "https://github.com/paradigmxyz/reth", package = "reth-revm"
 reth-interfaces = { git = "https://github.com/paradigmxyz/reth", package = "reth-interfaces"}
 
 alloy-json-abi = {git = "https://github.com/alloy-rs/core", package = "alloy-json-abi"}
-
+serde_json = { version = "1.0", default-features = false, features = ["alloc"] }
 
 
 

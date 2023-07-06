@@ -31,6 +31,7 @@ use tokio::runtime::Handle;
 
 pub mod action;
 pub mod parser;
+pub mod abi;
 
 pub type Provider = BlockchainProvider<
     Arc<Env<WriteMap>>,

@@ -3,6 +3,7 @@ use crate::action::{Action, ActionType, Transfer};
 use reth_rpc_types::trace::parity::{Action as RethAction, LocalizedTransactionTrace};
 
 use alloy_sol_types::{sol, SolCall};
+use alloy_json_abi::JsonAbi;
 use reth_primitives::{hex_literal::hex, H160};
 
 use std::cell::Cell;
@@ -90,4 +91,11 @@ impl Parser {
             _ => None,
         }
     }
+
+
+    
+
+
 }
+
+

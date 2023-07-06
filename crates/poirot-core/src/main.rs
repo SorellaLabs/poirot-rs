@@ -2,6 +2,7 @@ use ethers::prelude::k256::elliptic_curve::rand_core::block;
 use poirot_core::{parser::Parser, TracingClient};
 
 use poirot_core::action::ActionType;
+use poirot_core::abi::load_all_jsonabis;
 
 use std::{env, error::Error, path::Path};
 
@@ -28,6 +29,21 @@ fn main() {
     // Create the runtime
     let runtime = tokio_runtime().expect("Failed to create runtime");
 
+    let current_dir = env::current_dir().expect("Failed to get current directory");
+    let abi_dir = current_dir.parent().expect("Failed to get parent directory").join("abi");
+    
+
+    /*match load_all_jsonabis("abi") {
+        Ok(abis) => {
+            for abi in abis {
+                println!("Successfully loaded ABI");
+            }
+        }
+        Err(e) => eprintln!("Failed to load ABIs: {}", e)
+    } */
+
+    
+
     // Use the runtime to execute the async function
     match runtime.block_on(run(runtime.handle().clone())) {
         Ok(()) => println!("Success!"),
@@ -40,7 +56,7 @@ fn main() {
                 source = err.source();
             }
         }
-    }
+    } 
 }
 
 pub fn tokio_runtime() -> Result<tokio::runtime::Runtime, std::io::Error> {
