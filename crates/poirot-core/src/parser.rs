@@ -63,24 +63,32 @@ impl Parser {
                     Err(_) => return None,
                 };
 
-                // println!("{decoded:#?}");
-
                 match decoded {
                     IERC20::IERC20Calls::transfer(transfer_call) => {
-                        // println!("{transfer_call:#?}");
                         let transfer = Transfer {
                             to: transfer_call.to,
                             amount: transfer_call.amount.into(),
                             token: call.to,
                         };
+
+                        return Some(Action {
+                            ty: ActionType::Transfer(transfer),
+                            hash: curr.transaction_hash.unwrap(),
+                            block: curr.block_number.unwrap(),
+                        })
                     }
                     IERC20::IERC20Calls::transferFrom(transfer_from_call) => {
-                        println!("{transfer_from_call:#?}");
                         let transfer = Transfer {
                             to: transfer_from_call.to,
                             amount: transfer_from_call.amount.into(),
                             token: call.to,
                         };
+
+                        return Some(Action {
+                            ty: ActionType::Transfer(transfer),
+                            hash: curr.transaction_hash.unwrap(),
+                            block: curr.block_number.unwrap(),
+                        })
                     }
                     _ => return None,
                 }
