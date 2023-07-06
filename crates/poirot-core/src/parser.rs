@@ -82,8 +82,8 @@ impl Parser {
                 };
 
                 match decoded {
-                    IERC20Calls::transfer(transfer_call) => decoded = transfer_call,
-                    IERC20Calls::transferFrom(transfer_from_call) => decoded = transfer_from_call,
+                    IERC20::IERC20Calls::transfer(transfer_call) => decoded = transfer_call,
+                    IERC20::IERC20Calls::transferFrom(transfer_from_call) => decoded = transfer_from_call,
                     _ => return None,
                 }
 
