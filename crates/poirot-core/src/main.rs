@@ -10,7 +10,6 @@ use tracing_subscriber::EnvFilter;
 
 
 use reth_primitives::{BlockId, BlockNumberOrTag};
-=======
 use tracing::Subscriber;
 use tracing_subscriber::{
     filter::Directive, prelude::*, registry::LookupSpan, EnvFilter, Layer, Registry,
