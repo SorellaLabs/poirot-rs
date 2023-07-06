@@ -41,7 +41,7 @@ impl Parser {
     pub fn parse(&self) -> Vec<Action> {
         let mut actions = vec![];
 
-        for i in self.block_trace {
+        for i in self.block_trace.clone() {
             let parsed = self.parse_transfer(&i);
 
             if parsed.is_some() {
