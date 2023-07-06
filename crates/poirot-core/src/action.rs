@@ -18,7 +18,7 @@ pub enum ActionType {
 #[derive(Debug, Clone)]
 pub struct Transfer {
     // pub from: Address,
-    pub to: B160,
+    pub to: usize,
     pub amount: ruint2::Uint<256, 4>,
     pub token: B160,
 }
