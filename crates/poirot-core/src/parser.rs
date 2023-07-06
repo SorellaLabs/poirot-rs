@@ -1,6 +1,6 @@
-use poirot_core::action::Action;
-use poirot_core::action::ActionType;
-use poirot_core::action::Transfer;
+use crate::action::Action;
+use crate::action::ActionType;
+use crate::action::Transfer;
 
 use reth_rpc_types::trace::parity::{Action as RethAction};
 use reth_rpc_types::trace::parity::LocalizedTransactionTrace;
@@ -64,7 +64,7 @@ impl Parser {
 
     /// Parse a token transfer.
     pub fn parse_transfer(&self) -> Option<Action> {
-        let curr = self.current.clone();
+        let curr = self.current().clone();
 
         self.advance();
 
@@ -82,7 +82,7 @@ impl Parser {
                 } 
 
                 return Some(Action {
-                    ty: ActionType::Transfer(transfer);
+                    ty: ActionType::Transfer(transfer),
                     hash: curr.transaction_hash.unwrap(),
                     block: curr.transaction_position.unwrap(),
                 });
