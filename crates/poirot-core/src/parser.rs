@@ -81,6 +81,8 @@ impl Parser {
                     Err(_) => return None,
                 };
 
+                println!("{decoded:#?}");
+
                 let transfer = Transfer {
                     to: decoded.to,
                     amount: decoded.amount,
