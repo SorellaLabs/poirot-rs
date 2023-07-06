@@ -30,51 +30,36 @@ sol! {
 }
 
 pub struct Parser {
-    cursor: Cell<usize>,
     block_trace: Vec<LocalizedTransactionTrace>,
 }
 
 impl Parser {
     pub fn new(block_trace: Vec<LocalizedTransactionTrace>) -> Self {
-        Self { cursor: Cell::new(0), block_trace }
+        Self { block_trace }
     }
 
     pub fn parse(&self) -> Vec<Action> {
         let mut actions = vec![];
 
-        let parsed = self.parse_transfer();
+        for i in self.block_trace {
+            let parsed = self.parse_transfer(&i);
 
-        if parsed.is_some() {
-            actions.push(parsed.unwrap());
-        } else {
-            actions.push(Action {
-                ty: ActionType::Unclassified(self.current().clone()),
-                hash: self.current().transaction_hash.unwrap(),
-                block: self.current().block_number.unwrap(),
-            });
+            if parsed.is_some() {
+                actions.push(parsed.unwrap());
+            } else {
+                actions.push(Action {
+                    ty: ActionType::Unclassified(self.current().clone()),
+                    hash: self.current().transaction_hash.unwrap(),
+                    block: self.current().block_number.unwrap(),
+                });
+            }
         }
 
         actions
     }
 
-    /// Advance the parser forwards one step, ready to parse the next token.
-    pub fn advance(&self) {
-        let mut curr = self.cursor.get();
-        curr += 1;
-        self.cursor.set(curr);
-    }
-
-    /// Collect the current transaction from the parser.
-    pub fn current(&self) -> &LocalizedTransactionTrace {
-        &self.block_trace[self.cursor.get()]
-    }
-
     /// Parse a token transfer.
-    pub fn parse_transfer(&self) -> Option<Action> {
-        let curr = self.current().clone();
-
-        self.advance();
-
+    pub fn parse_transfer(&self, curr: &LocalizedTransactionTrace) -> Option<Action> {
         match curr.trace.action {
             RethAction::Call(call) => {
                 let mut decoded = match IERC20::IERC20Calls::decode(&call.input.to_vec(), true) {
