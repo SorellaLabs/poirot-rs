@@ -29,8 +29,8 @@ use reth_transaction_pool::{EthTransactionValidator, GasCostOrdering, Pool, Pool
 use std::{fmt::Debug, path::Path, sync::Arc};
 use tokio::runtime::Handle;
 
-mod parser;
-mod action;
+pub mod parser;
+pub mod action;
 
 pub type Provider = BlockchainProvider<
     Arc<Env<WriteMap>>,
