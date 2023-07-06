@@ -48,7 +48,7 @@ impl Parser {
                 actions.push(parsed.unwrap());
             } else {
                 actions.push(Action {
-                    ty: ActionType::Unclassified(self.current().clone()),
+                    ty: ActionType::Unclassified(i.clone()),
                     hash: i.clone().transaction_hash.unwrap(),
                     block: i.clone().block_number.unwrap(),
                 });
