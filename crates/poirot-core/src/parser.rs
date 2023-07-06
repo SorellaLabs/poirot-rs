@@ -82,16 +82,24 @@ impl Parser {
                 };
 
                 match decoded {
-                    IERC20::IERC20Calls::transfer(transfer_call) => let s_call = transfer_call,
-                    IERC20::IERC20Calls::transferFrom(transfer_from_call) => let s_call = transfer_from_call,
+                    IERC20::IERC20Calls::transfer(transfer_call) => {
+                        let transfer = Transfer {
+                            to: transfer_call.to,
+                            amount: transfer_call.amount,
+                            token: call.to,
+                        };
+                    },
+                    IERC20::IERC20Calls::transferFrom(transfer_from_call) => {
+                        let transfer = Transfer {
+                            to: transfer_from_call.to,
+                            amount: transfer_from_call.amount,
+                            token: call.to,
+                        };
+                    },
                     _ => return None,
                 }
 
-                let transfer = Transfer {
-                    to: s_call.to,
-                    amount: s_call.amount,
-                    token: call.to,
-                };
+
 
                 return Some(Action {
                     ty: ActionType::None,
