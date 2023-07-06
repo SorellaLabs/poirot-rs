@@ -26,12 +26,15 @@ alloy-json-abi = {git = "https://github.com/alloy-rs/core", package = "alloy-jso
 
 
 
+
 tokio = { version = "1.28.2", features = ["full"] }
+hex = "0.4.3"
 eyre = "0.6.8"
+ruint2 = "1.9.0"
 tracing = "0.1.0"
 tracing-subscriber = { version = "0.3", default-features = false, features = ["env-filter", "fmt"] }
 
 # evm
 ethers = { version = "2.0.7",  features = ["ipc", "ws"] }
-
-
+alloy-sol-types = "0.2.0"
+alloy-primitives = "0.2.0"

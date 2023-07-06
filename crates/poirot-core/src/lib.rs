@@ -29,6 +29,9 @@ use reth_transaction_pool::{EthTransactionValidator, GasCostOrdering, Pool, Pool
 use std::{fmt::Debug, path::Path, sync::Arc};
 use tokio::runtime::Handle;
 
+pub mod parser;
+pub mod action;
+
 pub type Provider = BlockchainProvider<
     Arc<Env<WriteMap>>,
     ShareableBlockchainTree<Arc<Env<WriteMap>>, Arc<BeaconConsensus>, Factory>,
@@ -38,9 +41,6 @@ pub type RethTxPool =
     Pool<EthTransactionValidator<Provider, PooledTransaction>, GasCostOrdering<PooledTransaction>>;
 
 pub type RethApi = EthApi<Provider, RethTxPool, NoopNetwork>;
-pub type RethFilter = EthFilter<Provider, RethTxPool>;
-pub type RethTrace = TraceApi<Provider, RethApi>;
-pub type RethDebug = DebugApi<Provider, RethApi>;
 
 pub struct TracingClient {
     pub reth_api: EthApi<Provider, RethTxPool, NoopNetwork>,
@@ -67,6 +67,7 @@ impl TracingClient {
         );
 
         let tree_config = BlockchainTreeConfig::default();
+
         let (canon_state_notification_sender, _receiver) =
             tokio::sync::broadcast::channel(tree_config.max_reorg_depth() as usize * 2);
 
@@ -82,6 +83,7 @@ impl TracingClient {
         .unwrap();
 
         let state_cache = EthStateCache::spawn(provider.clone(), EthStateCacheConfig::default());
+
         let tx_pool = reth_transaction_pool::Pool::eth_pool(
             EthTransactionValidator::new(provider.clone(), chain, task_executor.clone(), 1),
             Default::default(),
@@ -99,8 +101,7 @@ impl TracingClient {
             ),
         );
 
-        let max_tracing_requests = 10;
-        let tracing_call_guard = TracingCallGuard::new(max_tracing_requests);
+        let tracing_call_guard = TracingCallGuard::new(10);
 
         let reth_trace = TraceApi::new(
             provider.clone(),
@@ -117,14 +118,8 @@ impl TracingClient {
             tracing_call_guard,
         );
 
-        let max_logs_per_response = 1000;
-        let reth_filter = EthFilter::new(
-            provider,
-            tx_pool,
-            state_cache,
-            max_logs_per_response,
-            Box::new(task_executor),
-        );
+        let reth_filter =
+            EthFilter::new(provider, tx_pool, state_cache, 1000, Box::new(task_executor));
 
         Self { reth_api, reth_filter, reth_trace, reth_debug }
     }
