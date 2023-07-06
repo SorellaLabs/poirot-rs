@@ -1,5 +1,6 @@
 use reth_primitives::{Bytes, Address, H256, U256, B160};
 use reth_rpc_types::trace::parity::LocalizedTransactionTrace;
+use alloy_primitives::bits::address::Address;
 
 #[derive(Debug, Clone)]
 pub struct Action {
