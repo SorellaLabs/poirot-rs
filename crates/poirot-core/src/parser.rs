@@ -60,7 +60,7 @@ impl Parser {
 
     /// Parse a token transfer.
     pub fn parse_transfer(&self, curr: &LocalizedTransactionTrace) -> Option<Action> {
-        match curr.trace.action {
+        match &curr.trace.action {
             RethAction::Call(call) => {
                 let mut decoded = match IERC20::IERC20Calls::decode(&call.input.to_vec(), true) {
                     Ok(decoded) => decoded,
