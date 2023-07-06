@@ -3,9 +3,9 @@ use reth_rpc_types::trace::parity::LocalizedTransactionTrace;
 
 #[derive(Debug, Clone)]
 pub struct Action {
-    ty: ActionType,
-    hash: H256,
-    block: u64,    
+    pub ty: ActionType,
+    pub hash: H256,
+    pub block: u64,    
 }
 
 #[derive(Debug, Clone)]
