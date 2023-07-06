@@ -6,7 +6,7 @@ use reth_rpc_types::trace::parity::{Action as RethAction};
 use reth_rpc_types::trace::parity::LocalizedTransactionTrace;
 
 use alloy_sol_types::{sol, SolCall};
-use hex_literal::hex;
+use reth_primitives::hex_literal::hex;
 
 use std::cell::Cell;
 
@@ -79,7 +79,7 @@ impl Parser {
                     to: decoded.to,
                     amount: decoded.amount,
                     token: call.to,
-                } 
+                };
 
                 return Some(Action {
                     ty: ActionType::Transfer(transfer),
