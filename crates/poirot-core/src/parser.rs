@@ -67,7 +67,7 @@ impl Parser {
 
                 match decoded {
                     IERC20::IERC20Calls::transfer(transfer_call) => {
-                        println!("{transfer_call:#?}");
+                        // println!("{transfer_call:#?}");
                         let transfer = Transfer {
                             to: transfer_call.to,
                             amount: transfer_call.amount.into(),
@@ -75,6 +75,7 @@ impl Parser {
                         };
                     }
                     IERC20::IERC20Calls::transferFrom(transfer_from_call) => {
+                        println!("{transfer_from_call:#?}");
                         let transfer = Transfer {
                             to: transfer_from_call.to,
                             amount: transfer_from_call.amount.into(),
