@@ -81,11 +81,9 @@ impl Parser {
                     Err(_) => return None,
                 };
 
-                let s_call;
-
                 match decoded {
-                    IERC20::IERC20Calls::transfer(transfer_call) => s_call = transfer_call,
-                    IERC20::IERC20Calls::transferFrom(transfer_from_call) => s_call = transfer_from_call,
+                    IERC20::IERC20Calls::transfer(transfer_call) => let s_call = transfer_call,
+                    IERC20::IERC20Calls::transferFrom(transfer_from_call) => let s_call = transfer_from_call,
                     _ => return None,
                 }
 
