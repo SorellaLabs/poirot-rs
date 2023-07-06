@@ -1,5 +1,5 @@
 use poirot_core::TracingClient;
-use poirot_core::Parser;
+use poirot_core::parser::Parser;
 
 use std::{env, error::Error, path::Path};
 use tracing_subscriber::EnvFilter;
