@@ -52,9 +52,6 @@ async fn run(handle: tokio::runtime::Handle) -> Result<(), Box<dyn Error>> {
     // Initialize TracingClient
     let tracer = TracingClient::new(db_path, handle);
 
-    let tx_hash =
-        "0x742940f6bd10a5014055eb6f940ec894b3e164b985e02655fd04ce072ba6b854".parse().unwrap();
-
     let parity_trace = tracer.reth_trace.trace_block(BlockId::Number(BlockNumberOrTag::Latest)).await?;
 
     // Print traces
