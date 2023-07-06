@@ -12,6 +12,7 @@ pub struct Action {
 pub enum ActionType {
     Transfer(Transfer),
     Unclassified(LocalizedTransactionTrace),
+    None,
 }
 
 #[derive(Debug, Clone)]

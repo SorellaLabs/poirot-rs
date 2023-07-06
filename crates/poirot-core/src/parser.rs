@@ -83,14 +83,14 @@ impl Parser {
 
                 println!("{decoded:#?}");
 
-                let transfer = Transfer {
-                    to: decoded.to,
-                    amount: decoded.amount,
-                    token: call.to,
-                };
+                // let transfer = Transfer {
+                //     to: decoded.to,
+                //     amount: decoded.amount,
+                //     token: call.to,
+                // };
 
                 return Some(Action {
-                    ty: ActionType::Transfer(transfer),
+                    ty: ActionType::None,
                     hash: curr.transaction_hash.unwrap(),
                     block: curr.transaction_position.unwrap(),
                 });
