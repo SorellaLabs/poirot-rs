@@ -1,13 +1,9 @@
-use crate::action::Action;
-use crate::action::ActionType;
-use crate::action::Transfer;
+use crate::action::{Action, ActionType, Transfer};
 
-use reth_rpc_types::trace::parity::{Action as RethAction};
-use reth_rpc_types::trace::parity::LocalizedTransactionTrace;
+use reth_rpc_types::trace::parity::{Action as RethAction, LocalizedTransactionTrace};
 
 use alloy_sol_types::{sol, SolCall};
-use reth_primitives::hex_literal::hex;
-use reth_primitives::H160;
+use reth_primitives::{hex_literal::hex, H160};
 
 use std::cell::Cell;
 
@@ -74,14 +70,14 @@ impl Parser {
                             amount: transfer_call.amount.into(),
                             token: call.to,
                         };
-                    },
+                    }
                     IERC20::IERC20Calls::transferFrom(transfer_from_call) => {
                         let transfer = Transfer {
                             to: transfer_from_call.to,
                             amount: transfer_from_call.amount.into(),
                             token: call.to,
                         };
-                    },
+                    }
                     _ => return None,
                 }
 
@@ -89,7 +85,7 @@ impl Parser {
                     ty: ActionType::None,
                     hash: curr.transaction_hash.unwrap(),
                     block: curr.transaction_position.unwrap(),
-                });
+                })
             }
             _ => None,
         }

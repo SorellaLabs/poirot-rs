@@ -1,12 +1,12 @@
-use reth_primitives::{Bytes, H256, H160, U256};
-use reth_rpc_types::trace::parity::LocalizedTransactionTrace;
 use alloy_primitives::Address;
+use reth_primitives::{Bytes, H160, H256, U256};
+use reth_rpc_types::trace::parity::LocalizedTransactionTrace;
 
 #[derive(Debug, Clone)]
 pub struct Action {
     pub ty: ActionType,
     pub hash: H256,
-    pub block: u64,    
+    pub block: u64,
 }
 
 #[derive(Debug, Clone)]
