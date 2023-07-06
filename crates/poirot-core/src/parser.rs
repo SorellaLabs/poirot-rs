@@ -63,10 +63,11 @@ impl Parser {
                     Err(_) => return None,
                 };
 
-                println!("{decoded:#?}");
+                // println!("{decoded:#?}");
 
                 match decoded {
                     IERC20::IERC20Calls::transfer(transfer_call) => {
+                        println!("{transfer_call:#?}");
                         let transfer = Transfer {
                             to: transfer_call.to,
                             amount: transfer_call.amount.into(),
