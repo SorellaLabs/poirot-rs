@@ -68,8 +68,8 @@ impl Parser {
 
         self.advance();
 
-        match curr.action {
-            RethAction::Call => {
+        match curr.trace.action {
+            RethAction::Call(call) => {
                 let decoded = match IERC20::IERC20Calls::decode(&hex::encode(curr.input.to_vec()), true) {
                     Ok(decoded) => decoded,
                     Err(_) => return None,
@@ -78,7 +78,7 @@ impl Parser {
                 let transfer = Transfer {
                     to: decoded.to,
                     amount: decoded.amount,
-                    token: curr.trace.action.call.to,
+                    token: call.to,
                 } 
 
                 return Some(Action {
