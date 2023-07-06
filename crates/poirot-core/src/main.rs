@@ -2,6 +2,8 @@ use ethers::prelude::k256::elliptic_curve::rand_core::block;
 use poirot_core::TracingClient;
 use poirot_core::parser::Parser;
 
+use poirot_core::action::ActionType;
+
 use std::{env, error::Error, path::Path};
 
 // reth types
@@ -69,6 +71,13 @@ async fn run(handle: tokio::runtime::Handle) -> Result<(), Box<dyn Error>> {
         tracer.reth_trace.trace_block(BlockId::Number(BlockNumberOrTag::Latest)).await?;
 
     let parser = Parser::new(parity_trace.unwrap());
+
+    for i in parser.parse() {
+        match i.ty {
+            ActionType::Transfer(t) => println!("{transfer:#?}"),
+            _ => continue,
+        }
+    }
 
     // Print traces
     println!("{:#?}", parser.parse());
