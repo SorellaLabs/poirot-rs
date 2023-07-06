@@ -25,6 +25,7 @@ reth-interfaces = { git = "https://github.com/paradigmxyz/reth", package = "reth
 tokio = { version = "1.28.2", features = ["full"] }
 hex = "0.4.3"
 eyre = "0.6.8"
+ruint2 = "1.9.0"
 tracing = "0.1.0"
 tracing-subscriber = { version = "0.3", default-features = false, features = ["env-filter", "fmt"] }
 
