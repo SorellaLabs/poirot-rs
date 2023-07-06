@@ -21,5 +21,5 @@ pub struct Transfer {
     // pub from: Address,
     pub to: Address,
     pub amount: ruint2::Uint<256, 4>,
-    pub token: B160,
+    pub token: Address,
 }
