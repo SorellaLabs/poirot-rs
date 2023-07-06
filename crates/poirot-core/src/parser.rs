@@ -7,6 +7,7 @@ use reth_rpc_types::trace::parity::LocalizedTransactionTrace;
 
 use alloy_sol_types::{sol, SolCall};
 use reth_primitives::hex_literal::hex;
+use reth_primitives::Address;
 
 use std::cell::Cell;
 
@@ -98,8 +99,6 @@ impl Parser {
                     },
                     _ => return None,
                 }
-
-
 
                 return Some(Action {
                     ty: ActionType::None,
