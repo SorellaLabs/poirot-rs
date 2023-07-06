@@ -5,8 +5,7 @@ use tracing_subscriber::EnvFilter;
 // reth types
 use reth_rpc_types::trace::geth::GethDebugTracingOptions;
 
-use reth_primitives::BlockId;
-use reth_primitives::BlockNumberOrTag;
+use reth_primitives::{BlockId, BlockNumberOrTag};
 
 fn main() {
     let _ = tracing_subscriber::fmt()
@@ -52,7 +51,8 @@ async fn run(handle: tokio::runtime::Handle) -> Result<(), Box<dyn Error>> {
     // Initialize TracingClient
     let tracer = TracingClient::new(db_path, handle);
 
-    let parity_trace = tracer.reth_trace.trace_block(BlockId::Number(BlockNumberOrTag::Latest)).await?;
+    let parity_trace =
+        tracer.reth_trace.trace_block(BlockId::Number(BlockNumberOrTag::Latest)).await?;
 
     // Print traces
     println!("{:#?}", parity_trace);

@@ -1,20 +1,20 @@
-use reth_primitives::{Bytes, Address};
+use reth_primitives::{Bytes, Address, H256, U256};
+use reth_rpc_types::trace::parity::LocalizedTransactionTrace;
 
-pub enum Action {
+pub struct Action {
+    ty: ActionType,
+    hash: H256,
+    block: u64,    
+}
+
+pub enum ActionType {
     Transfer(Transfer),
-    Trade(Trade),
-
-    Unclassified(Bytes),
+    Unclassified(LocalizedTransactionTrace),
 }
 
 pub struct Transfer {
-    pub from: Address,
+    // pub from: Address,
     pub to: Address,
     pub amount: U256,
     pub token: Address,
-}
-
-pub struct Trade {
-    pub t1: Transfer,
-    pub t2: Transfer,
 }

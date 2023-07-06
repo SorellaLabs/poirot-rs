@@ -64,7 +64,7 @@ impl TracingClient {
         );
 
         let tree_config = BlockchainTreeConfig::default();
-        
+
         let (canon_state_notification_sender, _receiver) =
             tokio::sync::broadcast::channel(tree_config.max_reorg_depth() as usize * 2);
 
@@ -115,13 +115,8 @@ impl TracingClient {
             tracing_call_guard,
         );
 
-        let reth_filter = EthFilter::new(
-            provider,
-            tx_pool,
-            state_cache,
-            1000,
-            Box::new(task_executor),
-        );
+        let reth_filter =
+            EthFilter::new(provider, tx_pool, state_cache, 1000, Box::new(task_executor));
 
         Self { reth_api, reth_filter, reth_trace, reth_debug }
     }
