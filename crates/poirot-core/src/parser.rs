@@ -76,18 +76,22 @@ impl Parser {
 
         match curr.trace.action {
             RethAction::Call(call) => {
-                let decoded = match IERC20::IERC20Calls::decode(&call.input.to_vec(), true) {
+                let mut decoded = match IERC20::IERC20Calls::decode(&call.input.to_vec(), true) {
                     Ok(decoded) => decoded,
                     Err(_) => return None,
                 };
 
-                println!("{decoded:#?}");
+                match decoded {
+                    IERC20Calls::transfer(transfer_call) => decoded = transfer_call,
+                    IERC20Calls::transferFrom(transfer_from_call) => decoded = transfer_from_call,
+                    _ => return None,
+                }
 
-                // let transfer = Transfer {
-                //     to: decoded.to,
-                //     amount: decoded.amount,
-                //     token: call.to,
-                // };
+                let transfer = Transfer {
+                    to: decoded.to,
+                    amount: decoded.amount,
+                    token: call.to,
+                };
 
                 return Some(Action {
                     ty: ActionType::None,
