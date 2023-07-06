@@ -84,7 +84,7 @@ impl Parser {
 
                 match decoded {
                     IERC20::IERC20Calls::transfer(transfer_call) => {
-                        transfer_call.hello;
+                        transfer_call.to.hello;
                         let transfer = Transfer {
                             to: transfer_call.to.into(),
                             amount: transfer_call.amount.into(),
