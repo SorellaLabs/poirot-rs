@@ -4,8 +4,6 @@ use poirot_core::parser::Parser;
 
 use std::{env, error::Error, path::Path};
 
-use tracing_subscriber::EnvFilter;
-
 // reth types
 
 
@@ -15,7 +13,7 @@ use tracing_subscriber::{
     filter::Directive, prelude::*, registry::LookupSpan, EnvFilter, Layer, Registry,
 };
 // reth types
-use reth_primitives::{BlockId, BlockNumHash};
+use reth_primitives::{BlockNumHash};
 use reth_rpc_types::trace::geth::GethDebugTracingOptions;
 
 // alloy
