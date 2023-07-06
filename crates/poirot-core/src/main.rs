@@ -80,7 +80,6 @@ async fn run(handle: tokio::runtime::Handle) -> Result<(), Box<dyn Error>> {
     }
 
     // Print traces
-    println!("{:#?}", parser.parse());
 
     Ok(())
 }
