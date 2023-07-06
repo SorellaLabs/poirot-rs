@@ -1,6 +1,6 @@
 use reth_primitives::{Bytes, H256, U256};
 use reth_rpc_types::trace::parity::LocalizedTransactionTrace;
-use alloy_primitives::Address;
+use alloy_primitives::H160;
 
 #[derive(Debug, Clone)]
 pub struct Action {
@@ -19,7 +19,7 @@ pub enum ActionType {
 #[derive(Debug, Clone)]
 pub struct Transfer {
     // pub from: Address,
-    pub to: Address,
+    pub to: H160,
     pub amount: ruint2::Uint<256, 4>,
-    pub token: Address,
+    pub token: H160,
 }
