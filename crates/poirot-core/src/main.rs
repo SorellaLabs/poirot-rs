@@ -79,13 +79,6 @@ async fn run(handle: tokio::runtime::Handle) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-   
-
-    Ok(())
-
-
-}
-
 //TODO build trace decoder for Univ3 swaps, maybe use alloys-rs decoder have to see compat with
 
 async fn inspect_block(tracer: TracingClient, block_number: BlockId) -> Result<(), Box<dyn Error>> {
