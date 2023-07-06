@@ -38,12 +38,18 @@ impl Parser {
         Self { cursor: Cell::new(0), block_trace }
     }
 
-    // pub fn parse(&self) -> Vec<Action> {
-    //     let mut actions = vec![];
+    pub fn parse(&self) -> Vec<Action> {
+        let mut actions = vec![];
 
-        
-    // }
-s
+        let parsed = self.parse_transfer();
+
+        if parsed.is_some() {
+            actions.push(parsed.unwrap());
+        } else {
+            actions.push(self.current());
+        }
+    }
+
     /// Advance the parser forwards one step, ready to parse the next token.
     pub fn advance(&self) {
         let mut curr = self.cursor.get();

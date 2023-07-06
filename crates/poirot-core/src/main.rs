@@ -1,4 +1,6 @@
 use poirot_core::TracingClient;
+use poirot_core::Parser;
+
 use std::{env, error::Error, path::Path};
 use tracing_subscriber::EnvFilter;
 
@@ -54,8 +56,10 @@ async fn run(handle: tokio::runtime::Handle) -> Result<(), Box<dyn Error>> {
     let parity_trace =
         tracer.reth_trace.trace_block(BlockId::Number(BlockNumberOrTag::Latest)).await?;
 
+    let parser = Parser::new(parity_trace);
+
     // Print traces
-    println!("{:#?}", parity_trace);
+    println!("{:#?}", parser.parse());
 
     Ok(())
 }
