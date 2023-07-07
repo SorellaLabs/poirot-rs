@@ -20,10 +20,27 @@ pub enum ActionType {
     Unclassified(LocalizedTransactionTrace),
 }
 
+pub enum Protocol {
+    UniswapV2,
+    Sushiswap,
+    Balancer,
+    Curve,
+    UniswapV3,
+    SushiswapV3,
+    Bancor,
+    Kyber,
+    Mooniswap,
+    Dodo,
+    DodoV2,
+    DodoV3,
+}
+
 #[derive(Debug, Clone)]
 pub struct Withdrawal {
+    pub from: H160,
     pub to: H160,
     pub amount: U256,
+    pub Protocol: Protocol,
 }
 
 #[derive(Debug, Clone)]
