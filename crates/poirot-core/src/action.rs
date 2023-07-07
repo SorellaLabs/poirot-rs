@@ -14,8 +14,23 @@ pub enum ActionType {
     Transfer(Transfer),
     PoolCreation(PoolCreation),
 
+    WethDeposit(Deposit),
+    WethWithdraw(Withdrawal),
+
     Unclassified(LocalizedTransactionTrace),
     None,
+}
+
+#[derive(Debug, Clone)]
+pub struct Withdrawal {
+    pub to: Address,
+    pub amount: ruint2::Uint<256, 4>,
+}
+
+#[derive(Debug, Clone)]
+pub struct Deposit {
+    pub to: Address,
+    pub amount: ruint2::Uint<256, 4>,
 }
 
 #[derive(Debug, Clone)]
