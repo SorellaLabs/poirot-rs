@@ -12,6 +12,7 @@ pub struct Action {
 #[derive(Debug, Clone)]
 pub enum ActionType {
     Transfer(Transfer),
+    PoolCreation(PoolCreation),
 
     Unclassified(LocalizedTransactionTrace),
     None,
@@ -25,9 +26,23 @@ pub struct Transfer {
     pub token: H160,
 }
 
+#[derive(Debug, Clone)]
+pub struct PoolCreation {
+    token_0: H160,
+    token_1: H160,
+    fee: (),
+}
+
 impl Transfer {
     /// Public constructor function to instantiate a [`Transfer`].
     pub fn new(to: Address, amount: ruint2::Uint<256, 4>, token: H160) -> Self {
         Self { to, amount, token }
+    }
+}
+
+impl PoolCreation {
+    /// Public constructor function to instantiate a [`PoolCreation`].
+    pub fn new(token_0: H160, token_1: H160, fee: ()) -> Self {
+        Self { token_0, token_1, fee }
     }
 }

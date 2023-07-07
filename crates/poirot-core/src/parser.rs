@@ -16,6 +16,10 @@ sol! {
         function transfer(address to, uint256 amount) external returns (bool);
         function transferFrom(address from, address to, uint256 amount) external returns (bool);
     }
+
+    interface IUniswapV3Factory {
+        function createPool(address tokenA, address tokenB, uint24 fee) external returns (address pool);
+    }
 }
 
 pub struct Parser {
@@ -31,7 +35,7 @@ impl Parser {
         let mut actions = vec![];
 
         for i in self.block_trace.clone() {
-            let parsed = self.parse_transfer(&i);
+            let parsed = self.parse_trace(&i);
 
             if parsed.is_some() {
                 actions.push(parsed.unwrap());
@@ -47,7 +51,12 @@ impl Parser {
         actions
     }
 
-    /// Parse a token transfer.
+    /// Parse a single transaction trace.
+    pub fn parse_trace(&self, curr: &LocalizedTransactionTrace) -> Option<Action> {
+        self.parse_transfer(curr)
+            .or_else(|| self.parse_pool_creation(curr))
+    }
+
     pub fn parse_transfer(&self, curr: &LocalizedTransactionTrace) -> Option<Action> {
         match &curr.trace.action {
             RethAction::Call(call) => {
@@ -67,6 +76,29 @@ impl Parser {
                     IERC20::IERC20Calls::transferFrom(transfer_from_call) => {
                         return Some(Action {
                             ty: ActionType::Transfer(Transfer::new(transfer_from_call.to, transfer_from_call.amount.into(), call.to)),
+                            hash: curr.transaction_hash.unwrap(),
+                            block: curr.block_number.unwrap(),
+                        })
+                    }
+                    _ => return None,
+                }
+            }
+            _ => None,
+        }
+    }
+
+    pub fn parse_pool_creation(&self, curr: &LocalizedTransactionTrace) -> Option<Action> {
+        match &curr.trace.action {
+            RethAction::Call(call) => {
+                let mut decoded = match IUniswapV3Factory::IUniswapV3FactoryCalls::decode(&call.input.to_vec(), true) {
+                    Ok(decoded) => decoded,
+                    Err(_) => return None,
+                };
+
+                match decoded {
+                    IUniswapV3Factory::IUniswapV3FactoryCalls::createPool(create_pool_call) => {
+                        return Some(Action {
+                            ty: ActionType::PoolCreation(PoolCreation::new(create_pool_call.tokenA, create_pool_call.tokenB, create_pool_call.fee)),
                             hash: curr.transaction_hash.unwrap(),
                             block: curr.block_number.unwrap(),
                         })
