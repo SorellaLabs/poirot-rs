@@ -72,7 +72,7 @@ impl Deposit {
 
 impl Withdrawal {
     /// Public constructor function to instantiate a [`Withdrawal`].
-    pub fn new(to: H160, amount: alloy_primitves::Uint<256, 4>) -> Self {
+    pub fn new(to: H160, amount: alloy_primitives::Uint<256, 4>) -> Self {
         Self { to, amount }
     }
 }
