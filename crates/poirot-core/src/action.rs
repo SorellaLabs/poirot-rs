@@ -30,7 +30,7 @@ pub struct Withdrawal {
 #[derive(Debug, Clone)]
 pub struct Deposit {
     pub from: H160,
-    pub amount: alloy_primitives::Uint<256, 4>,
+    pub amount: ruint2::Uint<256, 4>,
 }
 
 #[derive(Debug, Clone)]
