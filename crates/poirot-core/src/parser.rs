@@ -88,4 +88,22 @@ impl Parser {
             _ => None,
         }
     }
+
+    pub fn parse_pool_creation(&self, curr: &LocalizedTransactionTrace) -> Option<Action> {
+        match &curr.trace.action {
+            RethAction::Call(call) => {
+                let mut decoded = match IUniswapV3Factory::createPoolCall::decode(&call.input.to_vec(), true) {
+                    Ok(decoded) => decoded,
+                    Err(_) => return None,
+                };
+
+                return Some(Action {
+                    ty: ActionType::PoolCreation(PoolCreation::new(createPoolCall.tokenA, createPoolCall.tokenB, createPoolCall.fee)),
+                    hash: curr.transaction_hash.unwrap(),
+                    block: curr.block_number.unwrap(),
+                })
+            }
+            _ => None,
+        }
+    }
 }
