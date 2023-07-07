@@ -71,6 +71,7 @@ async fn run(handle: tokio::runtime::Handle) -> Result<(), Box<dyn Error>> {
     for i in parser.parse() {
         match i.ty {
             ActionType::Transfer(_) => println!("{i:#?}"),
+            ActionType::PoolCreation(_) => println!("{i:#?}"),
             _ => continue,
         }
     }
