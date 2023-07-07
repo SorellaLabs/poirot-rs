@@ -34,6 +34,8 @@ impl Parser {
     pub fn parse(&self) -> Vec<Action> {
         let mut actions = vec![];
 
+        println!("{IUniswapV3Factory:#?");
+
         for i in self.block_trace.clone() {
             let parsed = self.parse_trace(&i);
 
