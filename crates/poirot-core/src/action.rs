@@ -28,9 +28,9 @@ pub struct Transfer {
 
 #[derive(Debug, Clone)]
 pub struct PoolCreation {
-    token_0: H160,
-    token_1: H160,
-    fee: (),
+    pub token_0: H160,
+    pub token_1: H160,
+    pub fee: (),
 }
 
 impl Transfer {

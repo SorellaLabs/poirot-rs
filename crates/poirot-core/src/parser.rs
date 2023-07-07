@@ -1,4 +1,4 @@
-use crate::action::{Action, ActionType, Transfer};
+use crate::action::{Action, ActionType, Transfer, PoolCreation};
 
 use reth_rpc_types::trace::parity::{Action as RethAction, LocalizedTransactionTrace};
 
