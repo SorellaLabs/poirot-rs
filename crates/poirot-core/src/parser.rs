@@ -21,6 +21,61 @@ sol! {
     #[derive(Debug, PartialEq)]
     interface IUniswapV3Factory {
         function createPool(address tokenA, address tokenB, uint24 fee) external returns (address);
+        function getPool(
+            address tokenA,
+            address tokenB,
+            uint24 fee
+        ) external view returns (address pool);
+        function feeAmountTickSpacing(uint24 fee) external view returns (int24);
+        function setOwner(address _owner) external;
+        function enableFeeAmount(uint24 fee, int24 tickSpacing) external;
+
+    }
+}
+
+sol! {
+    interface IUniswapV3FlashCallback {
+        function uniswapV3FlashCallback(
+            uint256 fee0,
+            uint256 fee1,
+            bytes calldata data
+        ) external;
+    }
+}
+
+sol! {
+    interface IUniswapV3MintCallback {
+        function uniswapV3MintCallback(
+            uint256 amount0Owed,
+            uint256 amount1Owed,
+            bytes calldata data
+        ) external;
+    }
+}
+
+sol! {
+    interface IUniswapV3SwapCallback {
+        function uniswapV3SwapCallback(
+            int256 amount0Delta,
+            int256 amount1Delta,
+            bytes calldata data
+        ) external;
+    }
+}
+
+sol! {
+    #[derive(Debug, PartialEq)]
+    interface IUniswapV3PoolDeployer {
+        function parameters()
+            external
+            view
+            returns (
+                address factory,
+                address token0,
+                address token1,
+                uint24 fee,
+                int24 tickSpacing
+            );
     }
 }
 
@@ -36,13 +91,41 @@ sol! {
     #[derive(Debug, PartialEq)]
     interface IUniswapV3Pool {
         function swap(address recipient, bool zeroForOne, int256 amountSpecified, uint160 sqrtPriceLimitX96, bytes data) external override returns (int256, int256);
+        function mint(
+            address recipient,
+            int24 tickLower,
+            int24 tickUpper,
+            uint128 amount,
+            bytes calldata data
+        ) external returns (uint256 amount0, uint256 amount1);
+        function collect(
+            address recipient,
+            int24 tickLower,
+            int24 tickUpper,
+            uint128 amount0Requested,
+            uint128 amount1Requested
+        ) external returns (uint128 amount0, uint128 amount1);
+        function burn(
+            int24 tickLower,
+            int24 tickUpper,
+            uint128 amount
+        ) external returns (uint256 amount0, uint256 amount1);
+        function flash(
+            address recipient,
+            uint256 amount0,
+            uint256 amount1,
+            bytes calldata data
+        ) external;
     }
 }
 
 pub struct Parser {
     block_trace: Vec<LocalizedTransactionTrace>,
 }
-/* £ */
+//TODO: Instead of directly going from trace to action we should have an intermediatary filter step
+//TODO: This step could be used to filter known contract interactions & directly match on the
+// appropriate decoder instead of naively looping thorugh all of them
+
 impl Parser {
     pub fn new(block_trace: Vec<LocalizedTransactionTrace>) -> Self {
         Self { block_trace }
@@ -68,6 +151,9 @@ impl Parser {
         actions
     }
 
+    //TODO: Note, because a transaction can be a swap -> transfer -> transfer we would have to
+    // avoid double counting the transfer & essentially create a higher TODO: level swap action
+    // that contains its subsequent transfers
     /// Parse a single transaction trace.
     pub fn parse_trace(&self, curr: &LocalizedTransactionTrace) -> Option<Action> {
         self.parse_transfer(curr)
