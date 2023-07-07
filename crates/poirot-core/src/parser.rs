@@ -8,9 +8,6 @@ use reth_primitives::{hex_literal::hex, H160};
 use std::cell::Cell;
 
 sol! {
-    /// Interface of the ERC20 standard as defined in [the EIP].
-    ///
-    /// [the EIP]: https://eips.ethereum.org/EIPS/eip-20
     #[derive(Debug, PartialEq)]
     interface IERC20 {
         function transfer(address to, uint256 amount) external returns (bool);
@@ -21,7 +18,7 @@ sol! {
 sol! {
     #[derive(Debug, PartialEq)]
     interface IUniswapV3Factory {
-        function createPool(address tokenA, address tokenB, uint24 fee) external returns (address pool);
+        function createPool(address tokenA, address tokenB, uint24 fee) external returns (address);
     }
 }
 
