@@ -1,10 +1,11 @@
-use crate::action::{Action, ActionType, PoolCreation, Transfer};
+use crate::action::{Action, ActionType, Deposit, PoolCreation, Transfer, Withdrawal};
 
 use reth_rpc_types::trace::parity::{Action as RethAction, LocalizedTransactionTrace};
 
 use alloy_json_abi::JsonAbi;
 use alloy_sol_types::{sol, SolCall};
 use reth_primitives::{hex_literal::hex, H160};
+use reth_revm::precompile::primitives::ruint::Uint;
 
 use std::cell::Cell;
 
@@ -20,6 +21,14 @@ sol! {
     #[derive(Debug, PartialEq)]
     interface IUniswapV3Factory {
         function createPool(address tokenA, address tokenB, uint24 fee) external returns (address);
+    }
+}
+
+sol! {
+    #[derive(Debug, PartialEq)]
+    interface WETH9 {
+        function deposit() public payable;
+        function withdraw(uint wad) public;
     }
 }
 
@@ -54,7 +63,42 @@ impl Parser {
 
     /// Parse a single transaction trace.
     pub fn parse_trace(&self, curr: &LocalizedTransactionTrace) -> Option<Action> {
-        self.parse_transfer(curr).or_else(|| self.parse_pool_creation(curr))
+        self.parse_transfer(curr)
+            .or_else(|| self.parse_pool_creation(curr))
+            .or_else(|| self.parse_weth(curr))
+    }
+
+    pub fn parse_weth(&self, curr: &LocalizedTransactionTrace) -> Option<Action> {
+        match &curr.trace.action {
+            RethAction::Call(call) => {
+                let mut decoded = match WETH9::WETH9Calls::decode(&call.input.to_vec(), true) {
+                    Ok(decoded) => decoded,
+                    Err(_) => return None,
+                };
+
+                match decoded {
+                    WETH9::WETH9Calls::deposit(deposit_call) => {
+                        return Some(Action {
+                            ty: ActionType::WethDeposit(Deposit::new(call.from, call.value)),
+                            hash: curr.transaction_hash.unwrap(),
+                            block: curr.block_number.unwrap(),
+                        })
+                    }
+                    WETH9::WETH9Calls::withdraw(withdraw_call) => {
+                        return Some(Action {
+                            ty: ActionType::WethWithdraw(Withdrawal::new(
+                                call.from,
+                                withdraw_call.wad,
+                            )),
+                            hash: curr.transaction_hash.unwrap(),
+                            block: curr.block_number.unwrap(),
+                        })
+                    }
+                    _ => return None,
+                }
+            }
+            _ => None,
+        }
     }
 
     pub fn parse_transfer(&self, curr: &LocalizedTransactionTrace) -> Option<Action> {
