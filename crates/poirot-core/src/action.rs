@@ -53,11 +53,11 @@ pub struct PoolCreation {
 
 #[derive(Debug, Clone)]
 pub struct Swap {
-    recipient: Address,
-    direction: bool,
-    amount_specified: alloy_primitives::Signed<256, 4>,
-    price_limit: alloy_primitives::Uint<256, 4>,
-    data: Vec<u8>,
+    pub recipient: Address,
+    pub direction: bool,
+    pub amount_specified: alloy_primitives::Signed<256, 4>,
+    pub price_limit: alloy_primitives::Uint<256, 4>,
+    pub data: Vec<u8>,
 }
 
 impl Transfer {
