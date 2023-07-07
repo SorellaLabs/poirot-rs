@@ -29,7 +29,7 @@ pub struct Withdrawal {
 
 #[derive(Debug, Clone)]
 pub struct Deposit {
-    pub to: Address,
+    pub from: Address,
     pub amount: ruint2::Uint<256, 4>,
 }
 
@@ -59,5 +59,19 @@ impl PoolCreation {
     /// Public constructor function to instantiate a [`PoolCreation`].
     pub fn new(token_0: Address, token_1: Address, fee: u32) -> Self {
         Self { token_0, token_1, fee }
+    }
+}
+
+impl Deposit {
+    /// Public constructor function to instantiate a [`Deposit`].
+    pub fn new(from: Address, amount: ruint2::Uint<256, 4>) -> Self {
+        Self { from, amount }
+    }
+}
+
+impl Withdrawal {
+    /// Public constructor function to instantiate a [`Withdrawal`].
+    pub fn new(to: Address, amount: ruint2::Uint<256, 4>) -> Self {
+        Self { to, amount }
     }
 }
