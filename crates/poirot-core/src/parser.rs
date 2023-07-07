@@ -77,7 +77,7 @@ impl Parser {
                 match decoded {
                     WETH9::WETH9Calls::deposit(deposit_call) => {
                         return Some(Action {
-                            ty: ActionType::WethDeposit(Deposit::new(call.from, call.value.into())),
+                            ty: ActionType::WethDeposit(Deposit::new(call.from, call.value)),
                             hash: curr.transaction_hash.unwrap(),
                             block: curr.block_number.unwrap(),
                         })
