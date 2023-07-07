@@ -1,4 +1,4 @@
-use crate::action::{Action, ActionType, Deposit, PoolCreation, Transfer, Withdrawal};
+use crate::action::{Action, ActionType, Deposit, PoolCreation, Swap, Transfer, Withdrawal};
 
 use reth_rpc_types::trace::parity::{Action as RethAction, LocalizedTransactionTrace};
 
@@ -28,6 +28,13 @@ sol! {
     interface WETH9 {
         function deposit() public payable;
         function withdraw(uint wad) public;
+    }
+}
+
+sol! {
+    #[derive(Debug, PartialEq)]
+    interface IUniswapV3Pool {
+        function swap(address recipient, bool zeroForOne, int256 amountSpecified, uint160 sqrtPriceLimitX96, bytes data) external override returns (int256, int256);
     }
 }
 
@@ -65,6 +72,32 @@ impl Parser {
         self.parse_transfer(curr)
             .or_else(|| self.parse_pool_creation(curr))
             .or_else(|| self.parse_weth(curr))
+            .or_else(|| self.parse_swap(curr))
+    }
+
+    pub fn parse_swap(&self, curr: &LocalizedTransactionTrace) -> Option<Action> {
+        match &curr.trace.action {
+            RethAction::Call(call) => {
+                let mut decoded = match IUniswapV3Pool::swapCall::decode(&call.input.to_vec(), true)
+                {
+                    Ok(decoded) => decoded,
+                    Err(_) => return None,
+                };
+
+                return Some(Action {
+                    ty: ActionType::Swap(Swap {
+                        recipient: decoded.recipient,
+                        direction: decoded.zeroForOne,
+                        amount_specified: decoded.amountSpecified,
+                        price_limit: decoded.sqrtPriceLimitX96,
+                        data: decoded.data,
+                    }),
+                    hash: curr.transaction_hash.unwrap(),
+                    block: curr.block_number.unwrap(),
+                })
+            }
+            _ => None,
+        }
     }
 
     pub fn parse_weth(&self, curr: &LocalizedTransactionTrace) -> Option<Action> {
