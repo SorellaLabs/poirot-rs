@@ -137,18 +137,3 @@ async fn test(tracer: &TracingClient) -> Result<(), Box<dyn std::error::Error>> 
 
     Ok(())
 }
-
-//TODO build trace decoder for Univ3 swaps, maybe use alloys-rs decoder have to see compat with
-
-// async fn inspect_block(tracer: TracingClient, block_number: BlockId) -> Result<(), Box<dyn
-// Error>> {     let block_trace = tracer
-//         .reth_trace
-//         .trace_block(block_number)
-//         .await
-//         .expect("Failed tracing block");
-
-//     if let Some(block_trace)
-
-//     Ok(())
-
-// }
