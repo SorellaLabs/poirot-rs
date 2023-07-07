@@ -42,7 +42,7 @@ impl Transfer {
 
 impl PoolCreation {
     /// Public constructor function to instantiate a [`PoolCreation`].
-    pub fn new(token_0: H160, token_1: H160, fee: u32) -> Self {
+    pub fn new(token_0: Address, token_1: Address, fee: u32) -> Self {
         Self { token_0, token_1, fee }
     }
 }
