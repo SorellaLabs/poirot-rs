@@ -54,7 +54,7 @@ impl Parser {
     /// Parse a single transaction trace.
     pub fn parse_trace(&self, curr: &LocalizedTransactionTrace) -> Option<Action> {
         self.parse_transfer(curr)
-            // .or_else(|| self.parse_pool_creation(curr))
+            .or_else(|| self.parse_pool_creation(curr))
     }
 
     pub fn parse_transfer(&self, curr: &LocalizedTransactionTrace) -> Option<Action> {

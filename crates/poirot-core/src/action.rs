@@ -28,9 +28,9 @@ pub struct Transfer {
 
 #[derive(Debug, Clone)]
 pub struct PoolCreation {
-    pub token_0: H160,
-    pub token_1: H160,
-    pub fee: (),
+    pub token_0: Address,
+    pub token_1: Address,
+    pub fee: u32,
 }
 
 impl Transfer {
@@ -42,7 +42,7 @@ impl Transfer {
 
 impl PoolCreation {
     /// Public constructor function to instantiate a [`PoolCreation`].
-    pub fn new(token_0: H160, token_1: H160, fee: ()) -> Self {
+    pub fn new(token_0: H160, token_1: H160, fee: u32) -> Self {
         Self { token_0, token_1, fee }
     }
 }
