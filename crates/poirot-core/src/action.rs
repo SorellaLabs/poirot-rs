@@ -14,7 +14,9 @@ pub struct Action {
 #[derive(Debug, Clone)]
 pub enum ActionType {
     Transfer(Transfer),
+
     PoolCreation(PoolCreation),
+    Swap(Swap),
 
     WethDeposit(Deposit),
     WethWithdraw(Withdrawal),
@@ -48,6 +50,15 @@ pub struct PoolCreation {
     pub token_0: Address,
     pub token_1: Address,
     pub fee: u32,
+}
+
+#[derive(Debug, Clone)]
+pub struct Swap {
+    pub recipient: Address,
+    pub direction: bool,
+    pub amount_specified: alloy_primitives::Signed<256, 4>,
+    pub price_limit: alloy_primitives::Uint<256, 4>,
+    pub data: Vec<u8>,
 }
 
 impl Transfer {
