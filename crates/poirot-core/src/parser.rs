@@ -92,13 +92,13 @@ impl Parser {
     pub fn parse_pool_creation(&self, curr: &LocalizedTransactionTrace) -> Option<Action> {
         match &curr.trace.action {
             RethAction::Call(call) => {
-                let mut decoded = match IUniswapV3Factory::decode(&call.input.to_vec(), true) {
+                let mut decoded = match IUniswapV3Factory::IUniswapV3FactoryCalls::decode(&call.input.to_vec(), true) {
                     Ok(decoded) => decoded,
                     Err(_) => return None,
                 };
 
                 match decoded {
-                    IUniswapV3Factory::createPool(create_pool_call) => {
+                    IUniswapV3Factory::IUniswapV3FactoryCalls::createPool(create_pool_call) => {
                         return Some(Action {
                             ty: ActionType::PoolCreation(PoolCreation::new(create_pool_call.tokenA, create_pool_call.tokenB, create_pool_call.fee)),
                             hash: curr.transaction_hash.unwrap(),
