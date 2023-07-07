@@ -1,8 +1,6 @@
 use alloy_json_abi::JsonAbi;
-use std::fs;
-use std::path::Path;
 use serde_json;
-use std::env;
+use std::{env, fs, path::Path};
 
 pub fn load_all_jsonabis(relative_path: &str) -> Result<Vec<JsonAbi>, Box<dyn std::error::Error>> {
     let mut abis = Vec::new();
@@ -26,6 +24,3 @@ pub fn load_all_jsonabis(relative_path: &str) -> Result<Vec<JsonAbi>, Box<dyn st
 
     Ok(abis)
 }
-
-
-

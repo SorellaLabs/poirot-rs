@@ -1,8 +1,7 @@
 use ethers::prelude::k256::elliptic_curve::rand_core::block;
 use poirot_core::{parser::Parser, TracingClient};
 
-use poirot_core::action::ActionType;
-use poirot_core::abi::load_all_jsonabis;
+use poirot_core::{abi::load_all_jsonabis, action::ActionType};
 
 use std::{env, error::Error, path::Path};
 
@@ -14,11 +13,11 @@ use tracing_subscriber::{
     filter::Directive, prelude::*, registry::LookupSpan, EnvFilter, Layer, Registry,
 };
 // reth types
-use reth_primitives::BlockNumHash;
+use reth_primitives::{BlockNumHash, H256};
 use reth_rpc_types::trace::geth::GethDebugTracingOptions;
-
 // alloy
 use alloy_json_abi::*;
+use std::str::FromStr;
 
 fn main() {
     let _ = tracing_subscriber::fmt()
@@ -31,7 +30,6 @@ fn main() {
 
     let current_dir = env::current_dir().expect("Failed to get current directory");
     let abi_dir = current_dir.parent().expect("Failed to get parent directory").join("abi");
-    
 
     /*match load_all_jsonabis("abi") {
         Ok(abis) => {
@@ -41,8 +39,6 @@ fn main() {
         }
         Err(e) => eprintln!("Failed to load ABIs: {}", e)
     } */
-
-    
 
     // Use the runtime to execute the async function
     match runtime.block_on(run(runtime.handle().clone())) {
@@ -56,7 +52,7 @@ fn main() {
                 source = err.source();
             }
         }
-    } 
+    }
 }
 
 pub fn tokio_runtime() -> Result<tokio::runtime::Runtime, std::io::Error> {
@@ -79,6 +75,11 @@ async fn run(handle: tokio::runtime::Handle) -> Result<(), Box<dyn Error>> {
     // Initialize TracingClient
     let tracer = TracingClient::new(db_path, handle);
 
+    // Test
+    test(&tracer).await?;
+
+    /*
+
     let parity_trace =
         tracer.reth_trace.trace_block(BlockId::Number(BlockNumberOrTag::Latest)).await?;
 
@@ -93,6 +94,30 @@ async fn run(handle: tokio::runtime::Handle) -> Result<(), Box<dyn Error>> {
     }
 
     // Print traces
+    */
+
+    Ok(())
+}
+
+async fn test(tracer: &TracingClient) -> Result<(), Box<dyn std::error::Error>> {
+    let tx_hash_str = "0x6f4c57c271b9054dbe31833d20138b15838e1482384c0cd6b1be44db54805bce";
+    let tx_hash = H256::from_str(tx_hash_str)?;
+
+    let traces = tracer.reth_trace.trace_transaction(tx_hash).await?;
+
+    // Print traces
+    match traces {
+        Some(traces) => {
+            if traces.is_empty() {
+                println!("No trace found for transaction.");
+            } else {
+                for trace in traces {
+                    println!("{:#?}", trace);
+                }
+            }
+        }
+        None => println!("No trace found for transaction."),
+    }
 
     Ok(())
 }
