@@ -34,8 +34,6 @@ impl Parser {
     pub fn parse(&self) -> Vec<Action> {
         let mut actions = vec![];
 
-        println!("{IUniswapV3Factory:#?}");
-
         for i in self.block_trace.clone() {
             let parsed = self.parse_trace(&i);
 
@@ -98,7 +96,7 @@ impl Parser {
                 };
 
                 return Some(Action {
-                    ty: ActionType::PoolCreation(PoolCreation::new(createPoolCall.tokenA, createPoolCall.tokenB, createPoolCall.fee)),
+                    ty: ActionType::PoolCreation(PoolCreation::new(decoded.tokenA, decoded.tokenB, decoded.fee)),
                     hash: curr.transaction_hash.unwrap(),
                     block: curr.block_number.unwrap(),
                 })
