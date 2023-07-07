@@ -25,7 +25,7 @@ pub enum ActionType {
 #[derive(Debug, Clone)]
 pub struct Withdrawal {
     pub to: H160,
-    pub amount: (),
+    pub amount: alloy_primitves::Uint<256, 4>,
 }
 
 #[derive(Debug, Clone)]
@@ -72,7 +72,7 @@ impl Deposit {
 
 impl Withdrawal {
     /// Public constructor function to instantiate a [`Withdrawal`].
-    pub fn new(to: H160, amount: ()) -> Self {
+    pub fn new(to: H160, amount: alloy_primitves::Uint<256, 4>) -> Self {
         Self { to, amount }
     }
 }
