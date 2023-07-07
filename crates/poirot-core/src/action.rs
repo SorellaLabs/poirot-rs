@@ -24,3 +24,10 @@ pub struct Transfer {
     pub amount: ruint2::Uint<256, 4>,
     pub token: H160,
 }
+
+impl Transfer {
+    /// Public constructor function to instantiate a [`Transfer`].
+    pub fn new(to: Address, amount: ruint2::Uint<256, 4>, token: H160) -> Self {
+        Self { to, amount, token }
+    }
+}
