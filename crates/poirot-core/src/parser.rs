@@ -19,6 +19,7 @@ sol! {
 }
 
 sol! {
+    #[derive(Debug, PartialEq)]
     interface IUniswapV3Factory {
         function createPool(address tokenA, address tokenB, uint24 fee) external returns (address pool);
     }
