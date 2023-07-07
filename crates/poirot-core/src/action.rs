@@ -1,7 +1,7 @@
 use alloy_primitives::Address;
 use reth_primitives::{Bytes, H160, H256, U256};
-use reth_rpc_types::trace::parity::LocalizedTransactionTrace;
 use reth_revm::precompile::primitives::ruint::Uint;
+use reth_rpc_types::trace::parity::LocalizedTransactionTrace;
 
 #[derive(Debug, Clone)]
 pub struct Action {
