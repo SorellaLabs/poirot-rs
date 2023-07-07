@@ -64,14 +64,14 @@ impl PoolCreation {
 
 impl Deposit {
     /// Public constructor function to instantiate a [`Deposit`].
-    pub fn new(from: H160, amount: ruint2::Uint<256, 4>) -> Self {
+    pub fn new(from: H160, amount: ()) -> Self {
         Self { from, amount }
     }
 }
 
 impl Withdrawal {
     /// Public constructor function to instantiate a [`Withdrawal`].
-    pub fn new(to: H160, amount: ruint2::Uint<256, 4>) -> Self {
+    pub fn new(to: H160, amount: ()) -> Self {
         Self { to, amount }
     }
 }
