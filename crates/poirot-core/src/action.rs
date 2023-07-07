@@ -23,13 +23,13 @@ pub enum ActionType {
 
 #[derive(Debug, Clone)]
 pub struct Withdrawal {
-    pub to: Address,
+    pub to: H160,
     pub amount: ruint2::Uint<256, 4>,
 }
 
 #[derive(Debug, Clone)]
 pub struct Deposit {
-    pub from: Address,
+    pub from: H160,
     pub amount: ruint2::Uint<256, 4>,
 }
 
