@@ -161,12 +161,18 @@ impl Parser {
             .or_else(|| self.parse_weth(curr))
             .or_else(|| self.parse_swap(curr))
     }
-    // TODO: So here we kind of have to create a type for each contract abi, and we can automate that 
-    // by using the alloy json abi, so we can just decode them for any function, & then after that 
-    // we sort for actions of interest, so even if we don't care about it for mev we still know wtf is going on 
-    // so we can eaisly see what we are missing that could potentially be interesting 
-    // because we have our db that is going to have all contract address so we want to do something where we are automating new integrations
-    // & can do something like this collect contract addr classified by (type, so like dex etc..) -> abi -> function -> action type -> mev filtering if of interest
+    // TODO: So here we kind of have to create a type for each contract abi, and we can automate
+    // that by using the alloy json abi, so we can just decode them for any function, & then
+    // after that we sort for actions of interest, so even if we don't care about it for mev we
+    // still know wtf is going on so we can eaisly see what we are missing that could
+    // potentially be interesting because we have our db that is going to have all contract
+    // address so we want to do something where we are automating new integrations
+    // & can do something like this collect contract addr classified by (type, so like dex etc..) ->
+    // abi -> function -> action type -> mev filtering if of interest So you are basically
+    // filtering by contract address, then match to a pool of function selectors, then match to
+    // decode which has corresponding action type From this we then inspect for mev by filtering
+    // through all the actions of interest
+
     pub fn parse_swap(&self, curr: &LocalizedTransactionTrace) -> Option<Action> {
         match &curr.trace.action {
             RethAction::Call(call) => {
