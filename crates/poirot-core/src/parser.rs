@@ -1,4 +1,4 @@
-use crate::action::{Action, ActionType, Transfer, PoolCreation};
+use crate::action::{Action, ActionType, PoolCreation, Transfer};
 
 use reth_rpc_types::trace::parity::{Action as RethAction, LocalizedTransactionTrace};
 
@@ -53,8 +53,7 @@ impl Parser {
 
     /// Parse a single transaction trace.
     pub fn parse_trace(&self, curr: &LocalizedTransactionTrace) -> Option<Action> {
-        self.parse_transfer(curr)
-            .or_else(|| self.parse_pool_creation(curr))
+        self.parse_transfer(curr).or_else(|| self.parse_pool_creation(curr))
     }
 
     pub fn parse_transfer(&self, curr: &LocalizedTransactionTrace) -> Option<Action> {
@@ -68,14 +67,22 @@ impl Parser {
                 match decoded {
                     IERC20::IERC20Calls::transfer(transfer_call) => {
                         return Some(Action {
-                            ty: ActionType::Transfer(Transfer::new(transfer_call.to, transfer_call.amount.into(), call.to)),
+                            ty: ActionType::Transfer(Transfer::new(
+                                transfer_call.to,
+                                transfer_call.amount.into(),
+                                call.to,
+                            )),
                             hash: curr.transaction_hash.unwrap(),
                             block: curr.block_number.unwrap(),
                         })
                     }
                     IERC20::IERC20Calls::transferFrom(transfer_from_call) => {
                         return Some(Action {
-                            ty: ActionType::Transfer(Transfer::new(transfer_from_call.to, transfer_from_call.amount.into(), call.to)),
+                            ty: ActionType::Transfer(Transfer::new(
+                                transfer_from_call.to,
+                                transfer_from_call.amount.into(),
+                                call.to,
+                            )),
                             hash: curr.transaction_hash.unwrap(),
                             block: curr.block_number.unwrap(),
                         })
@@ -90,13 +97,18 @@ impl Parser {
     pub fn parse_pool_creation(&self, curr: &LocalizedTransactionTrace) -> Option<Action> {
         match &curr.trace.action {
             RethAction::Call(call) => {
-                let mut decoded = match IUniswapV3Factory::createPoolCall::decode(&call.input.to_vec(), true) {
-                    Ok(decoded) => decoded,
-                    Err(_) => return None,
-                };
+                let mut decoded =
+                    match IUniswapV3Factory::createPoolCall::decode(&call.input.to_vec(), true) {
+                        Ok(decoded) => decoded,
+                        Err(_) => return None,
+                    };
 
                 return Some(Action {
-                    ty: ActionType::PoolCreation(PoolCreation::new(decoded.tokenA, decoded.tokenB, decoded.fee)),
+                    ty: ActionType::PoolCreation(PoolCreation::new(
+                        decoded.tokenA,
+                        decoded.tokenB,
+                        decoded.fee,
+                    )),
                     hash: curr.transaction_hash.unwrap(),
                     block: curr.block_number.unwrap(),
                 })
