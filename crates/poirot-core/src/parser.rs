@@ -42,7 +42,7 @@ sol! {
 pub struct Parser {
     block_trace: Vec<LocalizedTransactionTrace>,
 }
-
+/* £ */
 impl Parser {
     pub fn new(block_trace: Vec<LocalizedTransactionTrace>) -> Self {
         Self { block_trace }

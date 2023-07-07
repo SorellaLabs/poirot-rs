@@ -8,7 +8,6 @@ pub struct Action {
     pub ty: ActionType,
     pub hash: H256,
     pub block: u64,
-    pub protocol: String,
 }
 
 #[derive(Debug, Clone)]

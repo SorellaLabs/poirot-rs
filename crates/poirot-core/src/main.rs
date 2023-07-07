@@ -6,6 +6,8 @@ use poirot_core::{abi::load_all_jsonabis, action::ActionType};
 use std::{env, error::Error, path::Path};
 
 // reth types
+use reth_rpc_types::trace::parity::TraceType;
+use std::collections::HashSet;
 
 use reth_primitives::{BlockId, BlockNumberOrTag};
 use tracing::Subscriber;
@@ -103,21 +105,35 @@ async fn test(tracer: &TracingClient) -> Result<(), Box<dyn std::error::Error>> 
     let tx_hash_str = "0x6f4c57c271b9054dbe31833d20138b15838e1482384c0cd6b1be44db54805bce";
     let tx_hash = H256::from_str(tx_hash_str)?;
 
-    let traces = tracer.reth_trace.trace_transaction(tx_hash).await?;
+    let trace_types: HashSet<TraceType> =
+        vec![TraceType::Trace, TraceType::VmTrace, TraceType::StateDiff].into_iter().collect();
+
+    let trace_results = tracer.reth_trace.replay_transaction(tx_hash, trace_types).await?;
 
     // Print traces
-    match traces {
-        Some(traces) => {
-            if traces.is_empty() {
-                println!("No trace found for transaction.");
-            } else {
-                for trace in traces {
-                    println!("{:#?}", trace);
-                }
-            }
-        }
-        None => println!("No trace found for transaction."),
-    }
+    trace_results
+        .trace
+        .as_ref()
+        .map(|trace| {
+            trace.iter().for_each(|t| println!("{:#?}", t));
+        })
+        .unwrap_or_else(|| println!("No regular trace found for transaction."));
+
+    trace_results
+        .vm_trace
+        .as_ref()
+        .map(|vm_trace| {
+            println!("{:#?}", vm_trace);
+        })
+        .unwrap_or_else(|| println!("No VM trace found for transaction."));
+
+    trace_results
+        .state_diff
+        .as_ref()
+        .map(|state_diff| {
+            println!("{:#?}", state_diff);
+        })
+        .unwrap_or_else(|| println!("No state diff found for transaction."));
 
     Ok(())
 }
