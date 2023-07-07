@@ -16,7 +16,9 @@ sol! {
         function transfer(address to, uint256 amount) external returns (bool);
         function transferFrom(address from, address to, uint256 amount) external returns (bool);
     }
+}
 
+sol! {
     interface IUniswapV3Factory {
         function createPool(address tokenA, address tokenB, uint24 fee) external returns (address pool);
     }
