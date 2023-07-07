@@ -25,7 +25,7 @@ pub enum ActionType {
 #[derive(Debug, Clone)]
 pub struct Withdrawal {
     pub to: H160,
-    pub amount: alloy_primitves::Uint<256, 4>,
+    pub amount: alloy_primitives::Uint<256, 4>,
 }
 
 #[derive(Debug, Clone)]
