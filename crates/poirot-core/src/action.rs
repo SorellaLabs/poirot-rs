@@ -1,6 +1,7 @@
 use alloy_primitives::Address;
 use reth_primitives::{Bytes, H160, H256, U256};
 use reth_rpc_types::trace::parity::LocalizedTransactionTrace;
+use reth_revm::precompile::primitives::ruint::Uint;
 
 #[derive(Debug, Clone)]
 pub struct Action {
@@ -30,7 +31,7 @@ pub struct Withdrawal {
 #[derive(Debug, Clone)]
 pub struct Deposit {
     pub from: H160,
-    pub amount: (),
+    pub amount: Uint<256, 4>,
 }
 
 #[derive(Debug, Clone)]
@@ -64,7 +65,7 @@ impl PoolCreation {
 
 impl Deposit {
     /// Public constructor function to instantiate a [`Deposit`].
-    pub fn new(from: H160, amount: ()) -> Self {
+    pub fn new(from: H160, amount: Uint<256, 4>) -> Self {
         Self { from, amount }
     }
 }
