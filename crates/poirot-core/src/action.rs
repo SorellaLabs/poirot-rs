@@ -20,6 +20,8 @@ pub enum ActionType {
     Unclassified(LocalizedTransactionTrace),
 }
 
+
+#[derive(Debug, Clone)]
 pub enum Protocol {
     UniswapV2,
     Sushiswap,
