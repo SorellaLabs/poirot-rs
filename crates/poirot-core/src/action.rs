@@ -37,10 +37,9 @@ pub enum Protocol {
 
 #[derive(Debug, Clone)]
 pub struct Withdrawal {
-    pub from: H160,
     pub to: H160,
     pub amount: U256,
-    pub Protocol: Protocol,
+    //pub Protocol: Protocol,
 }
 
 #[derive(Debug, Clone)]
@@ -59,14 +58,14 @@ pub struct Transfer {
 
 #[derive(Debug, Clone)]
 pub struct PoolCreation {
-    pub token_0: H160,
-    pub token_1: H160,
+    pub token_0: Address,
+    pub token_1: Address,
     pub fee: u32,
 }
 
 #[derive(Debug, Clone)]
 pub struct Swap {
-    pub recipient: H160,
+    pub recipient: Address,
     pub direction: bool,
     pub amount_specified: U256,
     pub price_limit: U256,
