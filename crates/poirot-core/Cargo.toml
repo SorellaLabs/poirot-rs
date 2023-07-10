@@ -24,7 +24,7 @@ reth-interfaces = { git = "https://github.com/paradigmxyz/reth", package = "reth
 
 alloy-json-abi = {git = "https://github.com/alloy-rs/core", package = "alloy-json-abi"}
 serde_json = { version = "1.0", default-features = false, features = ["alloc"] }
-alloy-sol-types = {git = "https://github.com/alloy-rs/core", package = "alloy-sol-types", rev = "80e7894"}
+alloy-sol-types = {git = "https://github.com/alloy-rs/core", package = "alloy-sol-types", rev = "80e7894", features = ["json"]}
 alloy-primitives = {git = "https://github.com/alloy-rs/core", package = "alloy-primitives", rev = "80e7894"}
 
 tokio = { version = "1.28.2", features = ["full"] }
