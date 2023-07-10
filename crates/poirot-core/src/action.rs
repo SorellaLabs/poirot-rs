@@ -39,17 +39,14 @@ pub enum Protocol {
 
 #[derive(Debug, Clone)]
 pub struct Withdrawal {
-    pub from: H160,
     pub to: H160,
-    pub amount: U256,
-    pub Protocol: Protocol,
+    pub amount: alloy_primitives::Uint<256, 4>,
 }
 
 #[derive(Debug, Clone)]
 pub struct Deposit {
     pub from: H160,
-    pub tokens: Vec<H160>,
-    pub amounts: Vec<U256>,
+    pub amount: Uint<256, 4>,
 }
 
 #[derive(Debug, Clone)]
@@ -61,44 +58,44 @@ pub struct Transfer {
 
 #[derive(Debug, Clone)]
 pub struct PoolCreation {
-    pub token_0: H160,
-    pub token_1: H160,
+    pub token_0: Address,
+    pub token_1: Address,
     pub fee: u32,
 }
 
 #[derive(Debug, Clone)]
 pub struct Swap {
-    pub recipient: H160,
+    pub recipient: Address,
     pub direction: bool,
-    pub amount_specified: U256,
-    pub price_limit: U256,
+    pub amount_specified: alloy_primitives::Signed<256, 4>,
+    pub price_limit: alloy_primitives::Uint<256, 4>,
     pub data: Vec<u8>,
 }
 
 impl Transfer {
     /// Public constructor function to instantiate a [`Transfer`].
-    pub fn new(to: H160, amount: U256, token: H160) -> Self {
+    pub fn new(to: Address, amount: ruint2::Uint<256, 4>, token: H160) -> Self {
         Self { to, amount, token }
     }
 }
 
 impl PoolCreation {
     /// Public constructor function to instantiate a [`PoolCreation`].
-    pub fn new(token_0: H160, token_1: H160, fee: u32) -> Self {
+    pub fn new(token_0: Address, token_1: Address, fee: u32) -> Self {
         Self { token_0, token_1, fee }
     }
 }
 
 impl Deposit {
     /// Public constructor function to instantiate a [`Deposit`].
-    pub fn new(from: H160, tokens: Vec<H160>, amounts: Vec<U256>) -> Self {
-        Self { from, tokens, amounts }
+    pub fn new(from: H160, amount: Uint<256, 4>) -> Self {
+        Self { from, amount }
     }
 }
 
 impl Withdrawal {
     /// Public constructor function to instantiate a [`Withdrawal`].
-    pub fn new(to: H160, amount: U256) -> Self {
+    pub fn new(to: H160, amount: alloy_primitives::Uint<256, 4>) -> Self {
         Self { to, amount }
     }
 }
