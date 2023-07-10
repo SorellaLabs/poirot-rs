@@ -74,7 +74,7 @@ pub struct Swap {
 
 impl Transfer {
     /// Public constructor function to instantiate a [`Transfer`].
-    pub fn new(to: Address, amount: ruint2::Uint<256, 4>, token: H160) -> Self {
+    pub fn new(to: H160, amount: ruint2::Uint<256, 4>, token: H160) -> Self {
         Self { to, amount, token }
     }
 }
