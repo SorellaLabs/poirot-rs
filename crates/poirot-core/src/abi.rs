@@ -1,10 +1,10 @@
-use std::collections::HashMap;
-use std::path::PathBuf;
+use alloy_dyn_abi::DynSolType;
+use alloy_json_abi::{Function, JsonAbi};
 use alloy_sol_types::decode;
-use alloy_json_abi::Function;
-use serde_json::Value;
 use reth_rpc_types::trace::parity::{Action as RethAction, LocalizedTransactionTrace};
 use revm_primitives::bits::B160;
+use serde_json::Value;
+use std::{collections::HashMap, path::PathBuf};
 
 pub struct ContractAbiStorage<'a> {
     mapping: HashMap<&'a B160, PathBuf>,
@@ -12,9 +12,7 @@ pub struct ContractAbiStorage<'a> {
 
 impl<'a> ContractAbiStorage<'a> {
     pub fn new() -> Self {
-        Self {
-            mapping: HashMap::new(),
-        }
+        Self { mapping: HashMap::new() }
     }
 
     pub fn add_abi(&mut self, contract_address: &'a B160, abi_path: PathBuf) {
@@ -37,41 +35,36 @@ pub fn sleuth<'a>(
         _ => return Err(From::from("The action in the transaction trace is not Call(CallAction)")),
     };
 
-    let contract_address = contract_address;
-    let abi_path = storage
-        .get_abi(&contract_address)
-        .ok_or("No ABI found for this contract")?;
+    let abi_path = storage.get_abi(&contract_address).ok_or("No ABI found for this contract")?;
 
-
-    // Read the JSON ABI file
     let file = std::fs::File::open(abi_path)?;
     let reader = std::io::BufReader::new(file);
-    
-    // Parse the JSON ABI
-    let json_abi: Value = serde_json::from_reader(reader)?;
 
-    // Extract function selectors from the ABI
-    let mut function_selectors = HashMap::new();
-    if let Value::Array(functions) = json_abi.get("functions").unwrap() {
+    let json_abi: JsonAbi = serde_json::from_reader(reader)?;
+
+    let function_selector = &input[..4];
+
+    //todo:
+    if let Some(functions) = Some(json_abi.functions.values().flatten()) {
         for function in functions {
-            let function: Function = serde_json::from_value(function.clone())?;
-            function_selectors.insert(function.selector(), function);
+            if function.selector() == function_selector {
+                let input_types: Vec<String> =
+                    function.inputs.iter().map(|input| input.to_string()).collect();
+
+                let mut decoded_inputs = Vec::new();
+                for (index, input_type_str) in input_types.iter().enumerate() {
+                    //TODO: just fix this, where you properly provide the expected decoding from the abi 
+                    let input_data = &input[4 + index..]; // Skip the function selector and previous inputs
+                    let dyn_sol_type: DynSolType = input_type_str.parse().unwrap();
+                    let dyn_sol_value = dyn_sol_type.decode_params(input_data)?;
+                    decoded_inputs.push(format!("{:?}", dyn_sol_value));
+                }
+
+                let printout = format!("Function: {}\nInputs: {:?}", function.name, decoded_inputs);
+                return Ok(printout)
+            }
         }
     }
 
-    // Extract the function selector from the input
-    let function_selector = &input[..4];
-
-    // Find the matching function in the ABI
-    let function = function_selectors
-        .get(function_selector)
-        .ok_or("No matching function found in the ABI")?;
-
-    // Decode the input data
-    let decoded = decode::<Vec<Value>>(&input, true)?;
-
-    // Convert the decoded input to a string for printing
-    let printout = format!("{:?}", decoded);
-
-    Ok(printout)
+    Err(From::from("No matching function found in the ABI"))
 }

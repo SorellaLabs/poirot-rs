@@ -2,9 +2,7 @@ use crate::action::{Action, ActionType, Deposit, PoolCreation, Swap, Transfer, W
 
 use reth_rpc_types::trace::parity::{Action as RethAction, LocalizedTransactionTrace};
 
-use alloy_sol_types::{sol, SolCall};
-use alloy_sol_types::SolInterface;
-
+use alloy_sol_types::{sol, SolCall, SolInterface};
 
 sol! {
     #[derive(Debug, PartialEq)]

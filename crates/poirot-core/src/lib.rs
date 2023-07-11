@@ -90,7 +90,6 @@ impl TracingClient {
             Default::default(),
         );
 
-
         let reth_api = EthApi::new(
             provider.clone(),
             tx_pool.clone(),
