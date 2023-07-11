@@ -83,7 +83,7 @@ async fn run(handle: tokio::runtime::Handle) -> Result<(), Box<dyn Error>> {
 
     let parser = Parser::new(parity_trace.unwrap());
 
-    parser.store.insert(reth_primitives::H160::from_str("0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"), std::path::PathBuf::from("../abi/uni.json"));
+    parser.store.insert(reth_primitives::H160::from_str("0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f").unwrap(), std::path::PathBuf::from("../abi/uni.json"));
 
     for i in parser.parse() {
         match i {
