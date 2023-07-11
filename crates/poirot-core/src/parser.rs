@@ -33,17 +33,17 @@ impl Parser {
     }
 
    pub fn parse_trace(&self, trace: &LocalizedTransactionTrace) -> Result<Vec<Token>, ()>{
-        let action = match trace.action {
-            Action::Call(call) => call,
+        let action = match trace.trace.action {
+            RethAction::Call(call) => call,
             _ => Err(()),
         };
  
-        let file = std::fs::File::open(self.store.get(&action.to))?;
+        let file = std::fs::File::open(self.store.get(&action.to)?)?;
         let abi = Abi::load(std::io::BufReader::new(file));
 
         let mut function_selectors = HashMap::new();
 
-        for function in abi.functions() {
+        for function in abi.unwrap().functions() {
             function_selectors.insert(function.short_signature(), function);
         }
 
