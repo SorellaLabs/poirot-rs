@@ -1,5 +1,5 @@
 use alloy_primitives::{Address, U256};
-use reth_primitives::{Bytes, H160, H256};
+use reth_primitives::{H160, H256};
 use reth_revm::precompile::primitives::ruint::Uint;
 use reth_rpc_types::trace::parity::LocalizedTransactionTrace;
 
