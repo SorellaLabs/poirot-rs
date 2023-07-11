@@ -4,7 +4,7 @@ use reth_rpc_types::trace::parity::{Action as RethAction, LocalizedTransactionTr
 
 use alloy_json_abi::JsonAbi;
 use alloy_sol_types::{sol, SolCall};
-use reth_primitives::{hex_literal::hex, H160};
+use reth_primitives::{hex_literal::hex};
 use reth_revm::precompile::primitives::ruint::Uint;
 
 use std::collections::HashMap;
