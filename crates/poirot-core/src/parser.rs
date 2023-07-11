@@ -39,11 +39,11 @@ impl Parser {
         };
  
         let file = std::fs::File::open(self.store.get(&action.to).unwrap()).unwrap();
-        let abi = Abi::load(std::io::BufReader::new(file));
+        let abi = Abi::load(std::io::BufReader::new(file)).unwrap();
 
         let mut function_selectors = HashMap::new();
 
-        for function in abi.unwrap().functions() {
+        for function in abi.functions() {
             function_selectors.insert(function.short_signature(), function);
         }
 
