@@ -38,7 +38,7 @@ impl Parser {
             _ => return Err(()),
         };
  
-        let file = std::fs::File::open(self.store.get(&action.to)?)?;
+        let file = std::fs::File::open(self.store.get(&action.to).unwrap()).unwrap();
         let abi = Abi::load(std::io::BufReader::new(file));
 
         let mut function_selectors = HashMap::new();
@@ -52,6 +52,6 @@ impl Parser {
         let function = function_selectors
             .get(input_selector);
 
-        Ok(function?.decode_input(&action.input.to_vec())?)
+        Ok(function.unwrap().decode_input(&action.input.to_vec()).unwrap())
    }
 }
