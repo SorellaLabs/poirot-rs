@@ -1,8 +1,8 @@
 use ethers::prelude::k256::elliptic_curve::rand_core::block;
 use poirot_core::{parser::Parser, TracingClient};
 
-use poirot_core::{abi::load_all_jsonabis, action::ActionType};
 
+use poirot_core::{action::ActionType};
 use std::{env, error::Error, path::Path};
 
 // reth types
