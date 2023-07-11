@@ -78,7 +78,19 @@ async fn run(handle: tokio::runtime::Handle) -> Result<(), Box<dyn Error>> {
     let tracer = TracingClient::new(db_path, handle);
 
     // Test
-    test(&tracer).await?;
+    let parity_trace =
+        tracer.reth_trace.trace_block(BlockId::Number(BlockNumberOrTag::Latest)).await?;
+
+    let parser = Parser::new(parity_trace.unwrap());
+
+    parser.store.insert(H160::from_str("0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"), std::path::PathBuf::from("../abi/uni.json"));
+
+    for i in parser.parse() {
+        match i {
+            Ok(val) => println!("{val:#?}"),
+            Err(_) => continue,
+        }
+    }
 
     /*
 
@@ -101,39 +113,39 @@ async fn run(handle: tokio::runtime::Handle) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-async fn test(tracer: &TracingClient) -> Result<(), Box<dyn std::error::Error>> {
-    let tx_hash_str = "0x6f4c57c271b9054dbe31833d20138b15838e1482384c0cd6b1be44db54805bce";
-    let tx_hash = H256::from_str(tx_hash_str)?;
+// async fn test(tracer: &TracingClient) -> Result<(), Box<dyn std::error::Error>> {
+//     let tx_hash_str = "0x6f4c57c271b9054dbe31833d20138b15838e1482384c0cd6b1be44db54805bce";
+//     let tx_hash = H256::from_str(tx_hash_str)?;
 
-    let trace_types: HashSet<TraceType> =
-        vec![TraceType::Trace, TraceType::VmTrace, TraceType::StateDiff].into_iter().collect();
+//     let trace_types: HashSet<TraceType> =
+//         vec![TraceType::Trace, TraceType::VmTrace, TraceType::StateDiff].into_iter().collect();
 
-    let trace_results = tracer.reth_trace.replay_transaction(tx_hash, trace_types).await?;
+//     let trace_results = tracer.reth_trace.replay_transaction(tx_hash, trace_types).await?;
 
-    // Print traces
-    trace_results
-        .trace
-        .as_ref()
-        .map(|trace| {
-            trace.iter().for_each(|t| println!("{:#?}", t));
-        })
-        .unwrap_or_else(|| println!("No regular trace found for transaction."));
+//     // Print traces
+//     trace_results
+//         .trace
+//         .as_ref()
+//         .map(|trace| {
+//             trace.iter().for_each(|t| println!("{:#?}", t));
+//         })
+//         .unwrap_or_else(|| println!("No regular trace found for transaction."));
 
-    trace_results
-        .vm_trace
-        .as_ref()
-        .map(|vm_trace| {
-            println!("{:#?}", vm_trace);
-        })
-        .unwrap_or_else(|| println!("No VM trace found for transaction."));
+//     trace_results
+//         .vm_trace
+//         .as_ref()
+//         .map(|vm_trace| {
+//             println!("{:#?}", vm_trace);
+//         })
+//         .unwrap_or_else(|| println!("No VM trace found for transaction."));
 
-    trace_results
-        .state_diff
-        .as_ref()
-        .map(|state_diff| {
-            println!("{:#?}", state_diff);
-        })
-        .unwrap_or_else(|| println!("No state diff found for transaction."));
+//     trace_results
+//         .state_diff
+//         .as_ref()
+//         .map(|state_diff| {
+//             println!("{:#?}", state_diff);
+//         })
+//         .unwrap_or_else(|| println!("No state diff found for transaction."));
 
-    Ok(())
-}
+//     Ok(())
+// }
