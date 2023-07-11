@@ -10,7 +10,7 @@ use reth_revm::precompile::primitives::ruint::Uint;
 use std::collections::HashMap;
 use std::path::PathBuf;
 
-use ethers::abi::Abi;
+use ethers::abi::{Abi, Token};
 
 pub struct Parser {
     block_trace: Vec<LocalizedTransactionTrace>,
@@ -35,7 +35,7 @@ impl Parser {
    pub fn parse_trace(&self, trace: &LocalizedTransactionTrace) -> Result<Vec<Token>, ()>{
         let action = match trace.trace.action {
             RethAction::Call(call) => call,
-            _ => Err(()),
+            _ => return Err(()),
         };
  
         let file = std::fs::File::open(self.store.get(&action.to)?)?;
@@ -52,6 +52,6 @@ impl Parser {
         let function = function_selectors
             .get(input_selector);
 
-        Ok(function.decode_input(action.input)?)
+        Ok(function?.decode_input(&action.input.to_vec())?)
    }
 }
