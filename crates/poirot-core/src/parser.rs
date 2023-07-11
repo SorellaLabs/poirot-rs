@@ -15,7 +15,7 @@ use ethers::types::H160;
 
 pub struct Parser {
     block_trace: Vec<LocalizedTransactionTrace>,
-    pub store: HashMap<H160, PathBuf>,
+    pub store: HashMap<reth_primitives::H160, PathBuf>,
 }
 
 impl Parser {
