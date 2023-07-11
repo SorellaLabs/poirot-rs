@@ -25,7 +25,7 @@ impl Parser {
     pub fn parse(&self) -> Vec<Result<Vec<Token>, ()>> {
         let mut actions = vec![];
 
-        for trace in self.block_trace {
+        for trace in &self.block_trace {
             actions.push(self.parse_trace(&trace));
         }
 
@@ -33,7 +33,7 @@ impl Parser {
     }
 
    pub fn parse_trace(&self, trace: &LocalizedTransactionTrace) -> Result<Vec<Token>, ()>{
-        let action = match trace.trace.action {
+        let action = match &trace.trace.action {
             RethAction::Call(call) => call,
             _ => return Err(()),
         };
