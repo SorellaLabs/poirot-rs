@@ -12,7 +12,7 @@ use reth_db::{
     transaction::DbTx,
     DatabaseError,
 };
-use reth_network_api::test_utils::NoopNetwork;
+use reth_network_api::noop::NoopNetwork;
 use reth_primitives::MAINNET;
 use reth_provider::{providers::BlockchainProvider, ProviderFactory};
 use reth_revm::Factory;
@@ -86,14 +86,15 @@ impl TracingClient {
         let state_cache = EthStateCache::spawn(provider.clone(), EthStateCacheConfig::default());
 
         let tx_pool = reth_transaction_pool::Pool::eth_pool(
-            EthTransactionValidator::new(provider.clone(), chain, task_executor.clone(), 1),
+            EthTransactionValidator::new(provider.clone(), chain, task_executor.clone()),
             Default::default(),
         );
+
 
         let reth_api = EthApi::new(
             provider.clone(),
             tx_pool.clone(),
-            NoopNetwork,
+            NoopNetwork::default(),
             state_cache.clone(),
             GasPriceOracle::new(
                 provider.clone(),
