@@ -11,6 +11,7 @@ use std::collections::HashMap;
 use std::path::PathBuf;
 
 use ethers::abi::{Abi, Token};
+use ethers::types::H160;
 
 pub struct Parser {
     block_trace: Vec<LocalizedTransactionTrace>,
