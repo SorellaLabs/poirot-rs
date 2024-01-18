@@ -2,9 +2,9 @@
 
 A searchers' searcher
 
-## Proof of concept. I will start building out the tracing logic on block 17565965.
+Deprecated. 
 
-We are currently working on a greatly improved version internally, however, we plan to update this repository with a lite version that has similar functionality to Eigenphi soon.
+We've been cooking, watch out for [Brontes](https://github.com/SorellaLabs/brontes)
 
 
 
